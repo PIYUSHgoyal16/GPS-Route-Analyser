@@ -192,15 +192,51 @@ class Application(Tk):
                                 
         
     def speedVsDate(self):
-        pass
+        dates = []
+        speed = []
+
+        for i in self.dates:
+            dates.append(i.strftime("%m/%d/%Y"))
+            speed.append((self.dist*60)/self.durations[i])
+
+        plt.bar(dates,speed,align='center')
+        plt.title('Plot for Speed of Same Ride Vs Date',fontweight ="bold") 
+        plt.xlabel('Date (MM/DD/YYYY)',fontsize=15)
+        plt.xticks(rotation=45)
+        plt.ylabel('Speed (Km/Hour) ',fontsize=15)
+        plt.show()
 
 
     def timeVsDate(self):
-        pass
+        dates = []
+        durations = []
+
+        for i in self.dates:
+            dates.append(i.strftime("%m/%d/%Y"))
+            durations.append(self.durations[i])
+            
+        plt.bar(dates,durations,align='center')
+        plt.title('Plot for Duration of Same Ride Vs Date',fontweight ="bold") 
+        plt.xlabel('Date (MM/DD/YYYY)',fontsize=15)
+        plt.xticks(rotation=45)
+        plt.ylabel('Duration (Minutes)',fontsize=15)
+        plt.show()
 
 
     def elevationVsdate(self):
-        pass
+        dates = []
+        durations = []
+
+        for i in self.dates:
+            dates.append(i.strftime("%m/%d/%Y"))
+            durations.append(self.upwardDurations[i])
+            
+        plt.bar(dates,durations,align='center')
+        plt.title('Plot for Elevation Duration of Same Ride Vs Date',fontweight ="bold") 
+        plt.xlabel('Date (MM/DD/YYYY)',fontsize=15)
+        plt.xticks(rotation=45)
+        plt.ylabel('Duration (Minutes)',fontsize=15)
+        plt.show()
 
 
     def resolve_third_point(self):
