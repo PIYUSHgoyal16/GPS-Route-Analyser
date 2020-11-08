@@ -3,13 +3,16 @@ import tkinter
 from tkinter import *
 from tkinter import Tk
 from tkinter import Label
+from tkinter import StringVar
 from tkinter import filedialog
+from tkinter import messagebox
 from matplotlib import pyplot as plt
 import numpy as np
 import statistics as st
 import gpxpy
 import pandas as pd
 import math
+from datetime import datetime
 import os
 
 # Creating the class of the application
@@ -20,8 +23,15 @@ class Application(Tk):
         super().__init__()
         self.geometry('550x1520')
         self.grid()
+
+        self.dates = []
+        self.durations = {}
+        self.upwardDurations = {}
         
-        self.groupNumber=""
+        self.groupNumber=StringVar(self)
+        self.lat=StringVar(self)
+        self.long=StringVar(self)
+
         self.dir_location=""
         self.dist=""
         self.avgtime=""
@@ -29,8 +39,6 @@ class Application(Tk):
         self.highEle=""
         self.lowEle=""
         self.eleLen=""
-        self.lat=""
-        self.long=""
         self.startPoint1=""
         self.endPoint1=""
         self.rides1=""
@@ -123,7 +131,7 @@ class Application(Tk):
         self.EvsD = tkinter.Button(self,text = "Elevation-Speed Vs Date",command = self.elevationVsdate)
         self.EvsD.pack()
         
-        self.routeLength = Label(self, text="Route Length: " + str(self.dist))
+        self.routeLength = Label(self, text="\nRoute Length: " + str(self.dist))
         self.routeLength.pack()
         self.eleRouteLength = Label(self, text="Elevated Route Length: " + str(self.eleLen))
         self.eleRouteLength.pack()
@@ -142,6 +150,7 @@ class Application(Tk):
     def set_dir_location(self):
         self.dir_location = filedialog.askdirectory()
         self.file_label.config(text = "File: " + self.dir_location)
+        messagebox.showinfo("Status","Processing")
         self.groups = self.group(self.dir_location)
         
         self.startPoint1 = "lat: "+str(self.groups[0][0].loc[0]['lat']) + "\tLong: "+str(self.groups[0][0].loc[0]['lon'])
@@ -178,24 +187,60 @@ class Application(Tk):
             self.endPt4.config(text="End Point 4: " + self.endPoint4)
             
             self.numOfRides4.config(text="Number of Rides: "+str(len(self.groups[3])))
+
+        messagebox.showinfo("Status","Processed")
                                 
         
-
     def speedVsDate(self):
         pass
+
 
     def timeVsDate(self):
         pass
 
+
     def elevationVsdate(self):
         pass
 
-    def resolve_third_point(self):
-        #for group in self.groups[self.groupNumber]:
-        self.startPoint4 = "lat: "+str(self.groups[3][0].loc[0]['lat']) + "\tLong: "+str(self.groups[3][0].loc[0]['lon'])
-        self.startPt4.config(text="Start Point 4: " + self.startPoint4)
-        pass
 
+    def resolve_third_point(self):
+        messagebox.showinfo("Status","Processing")
+        for group in self.groups[int(self.groupNumber.get())-1]:
+            if (self.point(group, float(self.long.get()), float(self.lat.get()))):
+                ridedate = group.loc[0]["time"].date()
+                self.dates.append(ridedate)
+                dur = self.time(group) / 60
+                self.durations[ridedate] = dur
+                upward_dur = self.upward_time(group) / 60
+                self.upwardDurations[ridedate] = upward_dur
+                
+        self.dates.sort()
+
+        ''' Route Length'''
+        self.dist = self.route_len(self.groups[int(self.groupNumber.get())-1][0])
+        self.routeLength.config(text="\nRoute Length: " + str(round(self.dist,3)) + " km")
+        
+        ''' Average Time'''
+        self.avgtime = self.time(self.groups[int(self.groupNumber.get())-1][0])
+        self.Time.config(text="Average Time: " + str(round(self.avgtime/3600,3)) + " hours")
+        
+        ''' Average Speed'''
+        self.avgspeed = (self.dist*3600) / self.avgtime
+        self.Speed.config(text="Average Speed: " + str(round(self.avgspeed,3)) + " km/hour")
+        
+        ''' Maximum Elevation'''
+        self.highEle = self.highest_ele(self.groups[int(self.groupNumber.get())-1][0])
+        self.Highest.config(text="Maximum Elevation: " + str(self.highEle))
+
+        ''' Minimum Elevation'''
+        self.lowEle = self.lowest_ele(self.groups[int(self.groupNumber.get())-1][0])
+        self.Lowest.config(text="Minimum Elevation: " + str(self.lowEle))
+        
+        ''' Upward Elevated Path'''
+        self.eleLen = self.upward_route_len(self.groups[int(self.groupNumber.get())-1][0])
+        self.eleRouteLength.config(text="Elevated Path: " + str(round(self.eleLen,3)) + " km")
+        messagebox.showinfo("Status","Processed")
+        
 
     #Takes file as input and returns the file data as a dataframe
     def gpx_dataframe(self, file):
@@ -225,7 +270,7 @@ class Application(Tk):
 
 
     #Function returns true if 2 dataframes have same starting and ending point
-    def comparedf(self, df1, df2):
+    def compare(self, df1, df2):
         start1_lat = df1.loc[0]["lat"]
         start1_long = df1.loc[0]["lon"]
         start2_lat = df2.loc[0]["lat"]
@@ -252,7 +297,7 @@ class Application(Tk):
             flag = True
             keys = group.keys()
             for j in (keys):
-                if(self.comparedf(group[j][0],df)):
+                if(self.compare(group[j][0],df)):
                     group[j].append(df)
                     flag = False
                     break
@@ -262,89 +307,95 @@ class Application(Tk):
                 i = i+1    
         return group
 
-        #Function to calculate total time of ride
-        def time(self, df):
-            time_start = df.loc[0]["time"]
-            time_end = df.loc[len(df)-1]["time"]
-            return time_end - time_start
+    #Function to calculate total time of ride
+    def time(self, df):
+        time_start = df.loc[0]["time"]
+        time_end = df.loc[len(df)-1]["time"]
+        timediff = time_end - time_start
+        timediff = timediff.value * pow(10,-9)
+        return timediff
 
-        #Function to calculate distance travelled in a ride
-        def route_len(self, df):
-            distance = 0
-            for i in range(len(df)-1):
+    #Function to calculate total time of ride
+    def upward_time(self, df):
+        timediff = 0
+        for i in range(len(df)-1):
+            ele1 = df.loc[i]["ele"]
+            ele2 = df.loc[i+1]["ele"]
+            if (ele1 < ele2):
+                time_start = df.loc[i]["time"]
+                time_end = df.loc[i+1]["time"]
+                temptime = time_end - time_start
+                timediff += temptime.value * pow(10,-9)
+        return timediff
+
+    #Function to calculate distance travelled in a ride
+    def route_len(self, df):
+        distance = 0
+        for i in range(len(df)-1):
+            long1 = df.loc[i]["lon"] 
+            long2 = df.loc[i+1]["lon"] 
+            lat1 = df.loc[i]["lat"] 
+            lat2 = df.loc[i+1]["lat"] 
+            R = 6373.0
+            lat1 = math.radians(lat1)
+            lon1 = math.radians(long1)
+            lat2 = math.radians(lat2)
+            lon2 = math.radians(long2)
+
+            dlon = lon2 - lon1
+            dlat = lat2 - lat1
+
+            a = math.sin(dlat / 2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2)**2
+            c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+            d = R * c
+
+            distance = distance + d
+            
+        return distance
+
+    #Function to calculate distance travelled in a ride
+    def upward_route_len(self, df):
+        distance = 0
+        for i in range(len(df)-1):
+            ele1 = df.loc[i]["ele"]
+            ele2 = df.loc[i+1]["ele"]
+            if (ele1 < ele2):
                 long1 = df.loc[i]["lon"] 
                 long2 = df.loc[i+1]["lon"] 
                 lat1 = df.loc[i]["lat"] 
                 lat2 = df.loc[i+1]["lat"] 
-                R = 6373.0
-                lat1 = math.radians(lat1)
-                lon1 = math.radians(long1)
-                lat2 = math.radians(lat2)
-                lon2 = math.radians(long2)
+                distance = distance + self.dis_points(lat1, long1, lat2, long2)    
+        return distance
 
-                dlon = lon2 - lon1
-                dlat = lat2 - lat1
 
-                a = math.sin(dlat / 2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2)**2
-                c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-                d = R * c
+    #Function to check if given latitude and longitude are part of a dataframe
+    def point(self, df, long, lat):
+        for i in range(len(df)):
+            print(self.dis_points(df.loc[i]["lat"],df.loc[i]["lon"],lat,long))
+            if(self.dis_points(df.loc[i]["lat"],df.loc[i]["lon"],lat,long)<=self.threshold):
+                return True
+        return False
+        
+    def eleTime(self, groups):
+        for i in range(len(groups)):
+            plt.figure()
+            plt.title("Time taken on different days for longitude: ",groups[i][0].loc[0]["lon"],"and latitude: ",groups[i][0].loc[0]["lat"])
+            date=[]
+            time=[]
+            for j in range(len(groups[i])):
+                date.append(groups[i][j].loc[0]["time"].date())
+                time.append(groups[i][j].loc[0]["time"].time())
+                plt.scatter(date,time)
+                plt.xlabel("Date")
+                plt.ylabel("Time")
+        
+    def highest_ele(self, df):
+        return max(df["ele"])
 
-                distance = distance + d
-                
-            return distance
-
-       
-
-        #Function to check if given latitude and longitude are part of a dataframe
-        def point(self, df, long, lat):
-            for i in range(len(df)):
-                if(self.dis_points(df.loc[i]["lat"],df.loc[i]["lon"],lat,long)<=self.threshold):
-                    return True
-            return False
-
-        def dateTime(self, groups):
-            for i in range(len(groups)):
-                plt.figure()
-                plt.title("Time taken on different days for longitude: ",groups[i][0].loc[0]["lon"],"and latitude: ",groups[i][0].loc[0]["lat"])
-                date=[]
-                time=[]
-                for j in range(len(groups[i])):
-                    date.append(groups[i][j].loc[0]["time"].date())
-                    time.append(groups[i][j].loc[0]["time"].time())
-                    plt.scatter(date,time)
-                    plt.xlabel("Date")
-                    plt.ylabel("Time")
-            
-        def eleTime(self, groups):
-            for i in range(len(groups)):
-                plt.figure()
-                plt.title("Time taken on different days for longitude: ",groups[i][0].loc[0]["lon"],"and latitude: ",groups[i][0].loc[0]["lat"])
-                date=[]
-                time=[]
-                for j in range(len(groups[i])):
-                    date.append(groups[i][j].loc[0]["time"].date())
-                    time.append(groups[i][j].loc[0]["time"].time())
-                    plt.scatter(date,time)
-                    plt.xlabel("Date")
-                    plt.ylabel("Time")
-            
-        def highest_ele(self, df):
-            return max(df["ele"])
-
-        def lowest_ele(self, df):
-            return max(df["ele"])
+    def lowest_ele(self, df):
+        return min(df["ele"])
 
 # Create and run the application
 app = Application()
 app.title("Statistics For the File")
 app.mainloop()
-
-
-
-
-
-
-
-
-
-# groups = group("/home/jahnvi/Downloads/LAP_Main Project/rider3")
