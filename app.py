@@ -21,12 +21,17 @@ class Application(Tk):
     # Defining the __init__ function
     def __init__(self):
         super().__init__()
-        self.geometry('1050x2520')
+        self.geometry('750x2520')
         self.grid()
 
         self.dates = []
         self.durations = {}
         self.upwardDurations = {}
+
+        self.alldates = []
+        self.alldistances = {}
+        self.alldurations = {}
+        self.allupwardDurations = {}
         
         self.groupNumber=StringVar(self)
         self.lat=StringVar(self)
@@ -128,9 +133,9 @@ class Application(Tk):
         self.genstat = Label(f21, text="General Stat")
         self.genstat.config(font=("Helvetica", 18))
         self.genstat.pack()
-        self.DistvsDate = tkinter.Button(f21,text = "Time Vs Date",command = self.timeVsDate)
+        self.DistvsDate = tkinter.Button(f21,text = "Distance Vs Date",command = self.distVsDate)
         self.DistvsDate.pack()
-        self.SpeedVsDate = tkinter.Button(f21,text = "Elevation-Speed Vs Date",command = self.elevationVsdate)
+        self.SpeedVsDate = tkinter.Button(f21,text = "Speed Vs Date",command = self.allspeedVsdate)
         self.SpeedVsDate.pack()
 
         f=Frame(self,height=20,width=50, relief=RAISED, padx=15, pady=10, borderwidth=2)
@@ -202,6 +207,7 @@ class Application(Tk):
         self.dir_location = filedialog.askdirectory()
         self.file_label.config(text = "File: " + self.dir_location)
         messagebox.showinfo("Status","Start Processing?")
+        self.fill_info()
         self.groups = self.group(self.dir_location)
         
         self.startPoint1 = "Lat: "+str(round(self.groups[0][0].loc[0]['lat'], 4)) + "\tLong: "+str(round(self.groups[0][0].loc[0]['lon'], 4))
@@ -252,8 +258,53 @@ class Application(Tk):
             self.numOfRides4.config(text="N/A")
 
         messagebox.showinfo("Status","Processed")
-                                
+
+
+    def fill_info(self):
+        for file in os.listdir(self.dir_location):
+            path = (str(self.dir_location+"/"+file))
+            df = self.gpx_dataframe(path)
+
+            ridedate = df.loc[0]["time"].date()
+            self.alldates.append(ridedate)
+            self.alldistances[ridedate] = self.route_len(df)
+            self.alldurations[ridedate] = self.time(df)
+            self.allupwardDurations[ridedate] = self.upward_time(df)
         
+        self.alldates.sort()
+
+    def distVsDate(self):
+        dates = []
+        distances = []
+
+        for i in self.alldates:
+            dates.append(i.strftime("%m/%d/%Y"))
+            distances.append(self.alldistances[i])
+            
+        plt.bar(dates,distances,align='center')
+        plt.title('Plot for Distance Vs Date',fontweight ="bold") 
+        plt.xlabel('Date (MM/DD/YYYY)',fontsize=15)
+        plt.xticks(rotation=45)
+        plt.ylabel('Distances (km)',fontsize=15)
+        plt.show()
+
+
+    def allspeedVsdate(self):
+        dates = []
+        speed = []
+
+        for i in self.alldates:
+            dates.append(i.strftime("%m/%d/%Y"))
+            speed.append((self.alldistances[i]*60)/self.alldurations[i])
+
+        plt.bar(dates,speed,align='center')
+        plt.title('Plot for Speed Vs Date',fontweight ="bold") 
+        plt.xlabel('Date (MM/DD/YYYY)',fontsize=15)
+        plt.xticks(rotation=45)
+        plt.ylabel('Speed (Km/Hour) ',fontsize=15)
+        plt.show()
+
+
     def speedVsDate(self):
         dates = []
         speed = []
