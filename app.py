@@ -62,6 +62,7 @@ class Application(Tk):
         #Threshold to compare 2 points
         self.threshold = 1
 
+        #Creating a frame for choose a directory in GUI
         f1=Frame(self,height=20,width=50, relief=RAISED, padx=15, pady=10, borderwidth=2)
         f1.pack(fill='x')        
         # File labels 
@@ -78,7 +79,7 @@ class Application(Tk):
         f2=Frame(f21,height=20,width=500, relief=RAISED, padx=15, pady=10, borderwidth=2)
         f2.pack(fill='x')
 
-        # Tiles for Groups
+        #Creating tiles so as to show the groupings of GPX files(Similar to RecyclerView in android)
         f3=Frame(f2,height=20,width=50, relief=RAISED, padx=15, pady=10, borderwidth=2)
         f3.pack(padx=5, pady=10, side=LEFT)
         self.group1 = Label(f3, text="Group 1")
@@ -141,7 +142,7 @@ class Application(Tk):
         f=Frame(self,height=20,width=50, relief=RAISED, padx=15, pady=10, borderwidth=2)
         f.pack(fill='x')        
 
-        # 3rd Point
+        #Creating the Label for the third point
         self.third = Label(f, text="3rd Point")
         self.third.config(font=("Helvetica", 18))
         self.third.pack()
@@ -153,21 +154,25 @@ class Application(Tk):
         f33=Frame(f,height=20,width=50, relief=RAISED, borderwidth=2)
         f33.pack(fill='x')
 
+        #Creating the label and entry box for the group number
         self.gno = Label(f31, text="Enter Group No: " + self.endPoint4)
         self.gno.pack(padx=5, pady=5, side=LEFT)
         self.group_no = Entry(f31, textvariable=self.groupNumber)
         self.group_no.pack(fill=X, expand=True)
 
+        #Creating the label and entry box for the latitude
         self.enterlat = Label(f32, text="Enter Latitude:   " + self.endPoint4)
         self.enterlat.pack(padx=5, pady=5, side=LEFT)
         self.latitude = Entry(f32, textvariable=self.lat)
         self.latitude.pack(fill=X, expand=True)
         
+        #Creating the label and entry box for the longitude
         self.enterlong = Label(f33, text="Enter Longitude: " + self.endPoint4)
         self.enterlong.pack(padx=5, pady=5, side=LEFT)
         self.longitude = Entry(f33, textvariable=self.long)
         self.longitude.pack(fill=X, expand=True)
 
+        #Creating the submit button
         self.resolvethird = tkinter.Button(f,text = "Submit",command = self.resolve_third_point)
         self.resolvethird.pack()
 
@@ -176,7 +181,8 @@ class Application(Tk):
 
         f7=Frame(f8,height=20,width=50, relief=RAISED, padx=15, pady=10, borderwidth=2)
         f7.pack(fill='x')
-        #Final Output
+        
+        #Displaying the final output
         self.stats = Label(f7, text="Group " + self.groupNumber.get() + " Stats")
         self.stats.config(font=("Helvetica", 18))
         self.stats.pack()
@@ -273,6 +279,7 @@ class Application(Tk):
         
         self.alldates.sort()
 
+    #Creating function to display the distance vs date graph
     def distVsDate(self):
         dates = []
         distances = []
@@ -288,7 +295,7 @@ class Application(Tk):
         plt.ylabel('Distances (km)',fontsize=15)
         plt.show()
 
-
+    #Creating function to display the speed vs date graph
     def allspeedVsdate(self):
         dates = []
         speed = []
@@ -304,7 +311,7 @@ class Application(Tk):
         plt.ylabel('Speed (Km/Hour) ',fontsize=15)
         plt.show()
 
-
+    #Creating function to display the plot for speed vs date graph
     def speedVsDate(self):
         dates = []
         speed = []
