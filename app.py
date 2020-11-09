@@ -64,15 +64,27 @@ class Application(Tk):
 
         #Creating a frame for choose a directory in GUI
         f1=Frame(self,height=20,width=50, relief=RAISED, padx=15, pady=10, borderwidth=2)
-        f1.pack(fill='x')        
+        f1.pack(fill='x')
+
+        f12=Frame(f1,height=20)
+        f12.pack(fill='x')
+ 
+        f11=Frame(f12,height=20)
+        f11.pack(fill=BOTH, side=LEFT)
+
         # File labels 
-        self.file_label=Label(f1, text = "Directory Not Chosen ." + self.dir_location)
-        self.file_label.pack()
+        self.file_label=Label(f11, text = "Directory Not Chosen ." + self.dir_location)
+        self.file_label.pack(fill=BOTH)
 
         #Creating the browse button for choosing the text file in the GUI
-        self.browse = tkinter.Button(f1,text = "Choose Directory",command = self.set_dir_location)
-        self.browse.pack()
+        self.browse = tkinter.Button(f11,text = "Choose Directory",command = self.set_dir_location)
+        self.browse.pack(fill=BOTH)
 
+        self.status = Label(f12, text="STATUS: RUNNING")
+        self.status.config(font=("Helvatica", 16))
+        self.status.config(foreground="green")
+        self.status.pack(side=RIGHT)
+        
         f21=Frame(self,height=20,width=50, relief=RAISED, padx=15, pady=10, borderwidth=2)
         f21.pack(fill='x')
 
@@ -212,6 +224,8 @@ class Application(Tk):
     def set_dir_location(self):
         self.dir_location = filedialog.askdirectory()
         self.file_label.config(text = "File: " + self.dir_location)
+        self.status.config(text="STATUS: PROCESSING")
+        self.status.config(foreground="blue")
         messagebox.showinfo("Status","Start Processing?")
         self.fill_info()
         self.groups = self.group(self.dir_location)
@@ -263,6 +277,8 @@ class Application(Tk):
             self.endPt4.config(text="N/A")
             self.numOfRides4.config(text="N/A")
 
+        self.status.config(text="STATUS: PROCESSED")
+        self.status.config(foreground="green")
         messagebox.showinfo("Status","Processed")
 
 
@@ -361,6 +377,8 @@ class Application(Tk):
 
 
     def resolve_third_point(self):
+        self.status.config(text="STATUS: PROCESSING")
+        self.status.config(foreground="blue")
         messagebox.showinfo("Status","Start Processing?")
         for group in self.groups[int(self.groupNumber.get())-1]:
             if (self.point(group, float(self.long.get()), float(self.lat.get()))):
@@ -396,6 +414,8 @@ class Application(Tk):
         ''' Upward Elevated Path'''
         self.eleLen = self.upward_route_len(self.groups[int(self.groupNumber.get())-1][0])
         self.eleRouteLength.config(text="Elevated Path: " + str(round(self.eleLen,3)) + " km")
+        self.status.config(text="STATUS: PROCESSED")
+        self.status.config(foreground="green")
         messagebox.showinfo("Status","Processed")
         
 
