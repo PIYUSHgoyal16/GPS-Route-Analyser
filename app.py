@@ -327,7 +327,7 @@ class Application(Tk):
         plt.ylabel('Speed (Km/Hour) ',fontsize=15)
         plt.show()
 
-
+    #Creating function to display the time vs date graph
     def timeVsDate(self):
         dates = []
         durations = []
@@ -343,7 +343,7 @@ class Application(Tk):
         plt.ylabel('Duration (Minutes)',fontsize=15)
         plt.show()
 
-
+    #Creating function to display the elecation vs date graph
     def elevationVsdate(self):
         dates = []
         durations = []
@@ -409,7 +409,8 @@ class Application(Tk):
             for point in data:
                 df = df.append({'lon': point.longitude, 'lat' : point.latitude, 'ele' : point.elevation, 'time' : point.time}, ignore_index=True)
         return df
-
+    
+    #Creating a function to find out the distance between two locations
     def dis_points(self, lat1, lon1, lat2, lon2):
         R = 6373.0
         lat1 = math.radians(lat1)
