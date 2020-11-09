@@ -21,7 +21,7 @@ class Application(Tk):
     # Defining the __init__ function
     def __init__(self):
         super().__init__()
-        self.geometry('550x1520')
+        self.geometry('1050x2520')
         self.grid()
 
         self.dates = []
@@ -57,91 +57,142 @@ class Application(Tk):
         #Threshold to compare 2 points
         self.threshold = 1
 
+        f1=Frame(self,height=20,width=50, relief=RAISED, padx=15, pady=10, borderwidth=2)
+        f1.pack(fill='x')        
         # File labels 
-        self.file_label=Label(self, text = "Directory Not Chosen ." + self.dir_location)
+        self.file_label=Label(f1, text = "Directory Not Chosen ." + self.dir_location)
         self.file_label.pack()
 
         #Creating the browse button for choosing the text file in the GUI
-        self.browse = tkinter.Button(self,text = "Choose Directory",command = self.set_dir_location)
+        self.browse = tkinter.Button(f1,text = "Choose Directory",command = self.set_dir_location)
         self.browse.pack()
 
+        f21=Frame(self,height=20,width=50, relief=RAISED, padx=15, pady=10, borderwidth=2)
+        f21.pack(fill='x')
+
+        f2=Frame(f21,height=20,width=500, relief=RAISED, padx=15, pady=10, borderwidth=2)
+        f2.pack(fill='x')
+
         # Tiles for Groups
-        self.group1 = Label(self, text="\nGroup 1")
+        f3=Frame(f2,height=20,width=50, relief=RAISED, padx=15, pady=10, borderwidth=2)
+        f3.pack(padx=5, pady=10, side=LEFT)
+        self.group1 = Label(f3, text="Group 1")
         self.group1.config(font=("Helvetica", 18))
         self.group1.pack()
-        self.startPt1 = Label(self, text="Start Point 1: " + self.startPoint1)
+        self.startPt1 = Label(f3, text="Start Point 1: " + self.startPoint1)
         self.startPt1.pack()
-        self.endPt1 = Label(self, text="End Point 1: " + self.endPoint1)
+        self.endPt1 = Label(f3, text="End Point 1: " + self.endPoint1)
         self.endPt1.pack()
-        self.numOfRides1 = Label(self, text="Start Point 1: " + self.rides1)
+        self.numOfRides1 = Label(f3, text="Start Point 1: " + self.rides1)
         self.numOfRides1.pack()
 
-        self.group2 = Label(self, text="\nGroup 2")
+        f4=Frame(f2,height=20,width=50, relief=RAISED, padx=15, pady=10, borderwidth=2)
+        f4.pack(fill='x',padx=5, pady=10, side=RIGHT)
+        self.group2 = Label(f4, text="Group 2")
         self.group2.config(font=("Helvetica", 18))
         self.group2.pack()
-        self.startPt2 = Label(self, text="Start Point 2: " + self.startPoint2)
+        self.startPt2 = Label(f4, text="Start Point 2: " + self.startPoint2)
         self.startPt2.pack()
-        self.endPt2 = Label(self, text="End Point 2: " + self.endPoint2)
+        self.endPt2 = Label(f4, text="End Point 2: " + self.endPoint2)
         self.endPt2.pack()
-        self.numOfRides2 = Label(self, text="Start Point 2: " + self.rides2)
+        self.numOfRides2 = Label(f4, text="Start Point 2: " + self.rides2)
         self.numOfRides2.pack()
 
-        self.group3 = Label(self, text="\nGroup 3")
+        f22=Frame(f21,height=20,width=500, relief=RAISED, padx=15, pady=10, borderwidth=2)
+        f22.pack(fill='x')
+
+        f5=Frame(f22,height=20,width=500, relief=RAISED, padx=15, pady=10, borderwidth=2)
+        f5.pack(fill='x',padx=5, pady=10, side=LEFT)
+        self.group3 = Label(f5, text="Group 3")
         self.group3.config(font=("Helvetica", 18))
         self.group3.pack()
-        self.startPt3 = Label(self, text="Start Point 3: " + self.startPoint3)
+        self.startPt3 = Label(f5, text="Start Point 3: " + self.startPoint3)
         self.startPt3.pack()
-        self.endPt3 = Label(self, text="End Point 3: " + self.endPoint3)
+        self.endPt3 = Label(f5, text="End Point 3: " + self.endPoint3)
         self.endPt3.pack()
-        self.numOfRides3 = Label(self, text="Start Point 3: " + self.rides3)
+        self.numOfRides3 = Label(f5, text="Start Point 3: " + self.rides3)
         self.numOfRides3.pack()
 
-        self.group4 = Label(self, text="\nGroup 4")
+        f6=Frame(f22,height=20,width=500, relief=RAISED, padx=15, pady=10, borderwidth=2)
+        f6.pack(fill='x',padx=5, pady=10, side=RIGHT)
+        self.group4 = Label(f6, text="Group 4")
         self.group4.config(font=("Helvetica", 18))
         self.group4.pack()
-        self.startPt4 = Label(self, text="Start Point 4: " + self.startPoint4)
+        self.startPt4 = Label(f6, text="Start Point 4: " + self.startPoint4)
         self.startPt4.pack()
-        self.endPt4 = Label(self, text="End Point 4: " + self.endPoint4)
+        self.endPt4 = Label(f6, text="End Point 4: " + self.endPoint4)
         self.endPt4.pack()
-        self.numOfRides4 = Label(self, text="Start Point 4: " + self.rides4)
+        self.numOfRides4 = Label(f6, text="Start Point 4: " + self.rides4)
         self.numOfRides4.pack()
 
+        self.genstat = Label(f21, text="General Stat")
+        self.genstat.config(font=("Helvetica", 18))
+        self.genstat.pack()
+        self.DistvsDate = tkinter.Button(f21,text = "Time Vs Date",command = self.timeVsDate)
+        self.DistvsDate.pack()
+        self.SpeedVsDate = tkinter.Button(f21,text = "Elevation-Speed Vs Date",command = self.elevationVsdate)
+        self.SpeedVsDate.pack()
+
+        f=Frame(self,height=20,width=50, relief=RAISED, padx=15, pady=10, borderwidth=2)
+        f.pack(fill='x')        
 
         # 3rd Point
-        self.third = Label(self, text="\n3rd Point")
+        self.third = Label(f, text="3rd Point")
         self.third.config(font=("Helvetica", 18))
         self.third.pack()
-        self.group_no = Entry(self, textvariable=self.groupNumber)
-        self.group_no.pack()
-        self.latitude = Entry(self, textvariable=self.lat)
-        self.latitude.pack()
-        self.longitude = Entry(self, textvariable=self.long)
-        self.longitude.pack()
-        self.resolvethird = tkinter.Button(self,text = "Submit",command = self.resolve_third_point)
+        
+        f31=Frame(f,height=20,width=50, relief=RAISED, borderwidth=2)
+        f31.pack(fill='x')
+        f32=Frame(f,height=20,width=50, relief=RAISED, borderwidth=2)
+        f32.pack(fill='x')
+        f33=Frame(f,height=20,width=50, relief=RAISED, borderwidth=2)
+        f33.pack(fill='x')
+
+        self.gno = Label(f31, text="Enter Group No: " + self.endPoint4)
+        self.gno.pack(padx=5, pady=5, side=LEFT)
+        self.group_no = Entry(f31, textvariable=self.groupNumber)
+        self.group_no.pack(fill=X, expand=True)
+
+        self.enterlat = Label(f32, text="Enter Latitude:   " + self.endPoint4)
+        self.enterlat.pack(padx=5, pady=5, side=LEFT)
+        self.latitude = Entry(f32, textvariable=self.lat)
+        self.latitude.pack(fill=X, expand=True)
+        
+        self.enterlong = Label(f33, text="Enter Longitude: " + self.endPoint4)
+        self.enterlong.pack(padx=5, pady=5, side=LEFT)
+        self.longitude = Entry(f33, textvariable=self.long)
+        self.longitude.pack(fill=X, expand=True)
+
+        self.resolvethird = tkinter.Button(f,text = "Submit",command = self.resolve_third_point)
         self.resolvethird.pack()
 
+        f8=Frame(self,height=20,width=50, relief=RAISED, padx=15, pady=10, borderwidth=2)
+        f8.pack(fill='x')
+
+        f7=Frame(f8,height=20,width=50, relief=RAISED, padx=15, pady=10, borderwidth=2)
+        f7.pack(fill='x')
         #Final Output
-        self.stats = Label(self, text="\nStats")
+        self.stats = Label(f7, text="Group " + self.groupNumber.get() + " Stats")
         self.stats.config(font=("Helvetica", 18))
         self.stats.pack()
-        self.SvsD = tkinter.Button(self,text = "Speed Vs Date",command = self.speedVsDate)
+        self.SvsD = tkinter.Button(f7,text = "Speed Vs Date",command = self.speedVsDate)
         self.SvsD.pack()
-        self.TvsD = tkinter.Button(self,text = "Time Vs Date",command = self.timeVsDate)
+        self.TvsD = tkinter.Button(f7,text = "Time Vs Date",command = self.timeVsDate)
         self.TvsD.pack()
-        self.EvsD = tkinter.Button(self,text = "Elevation-Speed Vs Date",command = self.elevationVsdate)
+        self.EvsD = tkinter.Button(f7,text = "Elevation-Speed Vs Date",command = self.elevationVsdate)
         self.EvsD.pack()
         
-        self.routeLength = Label(self, text="\nRoute Length: " + str(self.dist))
+        self.routeLength = Label(f7, text="\nRoute Length: " + str(self.dist))
         self.routeLength.pack()
-        self.eleRouteLength = Label(self, text="Elevated Route Length: " + str(self.eleLen))
+        self.eleRouteLength = Label(f7, text="Elevated Route Length: " + str(self.eleLen))
         self.eleRouteLength.pack()
-        self.Speed = Label(self, text="Average Speed: " + str(self.avgspeed))
+        self.Speed = Label(f7, text="Average Speed: " + str(self.avgspeed))
         self.Speed.pack()
-        self.Time = Label(self, text="Average Time: " + str(self.avgtime))
+        self.Time = Label(f7, text="Average Time: " + str(self.avgtime))
         self.Time.pack()
-        self.Highest = Label(self, text="Highest Elevation Point: " + str(self.highEle))
+        self.Highest = Label(f7, text="Highest Elevation Point: " + str(self.highEle))
         self.Highest.pack()
-        self.Lowest = Label(self, text="Lowest Elevation Point: " + str(self.lowEle))
+        self.Lowest = Label(f7, text="Lowest Elevation Point: " + str(self.lowEle))
         self.Lowest.pack()
         
         
@@ -150,43 +201,55 @@ class Application(Tk):
     def set_dir_location(self):
         self.dir_location = filedialog.askdirectory()
         self.file_label.config(text = "File: " + self.dir_location)
-        messagebox.showinfo("Status","Processing")
+        messagebox.showinfo("Status","Start Processing?")
         self.groups = self.group(self.dir_location)
         
-        self.startPoint1 = "lat: "+str(self.groups[0][0].loc[0]['lat']) + "\tLong: "+str(self.groups[0][0].loc[0]['lon'])
+        self.startPoint1 = "Lat: "+str(round(self.groups[0][0].loc[0]['lat'], 4)) + "\tLong: "+str(round(self.groups[0][0].loc[0]['lon'], 4))
         self.startPt1.config(text="Start Point 1: " + self.startPoint1)
         
-        self.endPoint1 = "lat: "+str(self.groups[0][0].loc[len(self.groups[0][0])-1]["lat"]) + "\tLong: "+str(self.groups[0][0].loc[len(self.groups[0][0])-1]["lon"])
+        self.endPoint1 = "Lat: "+str(round(self.groups[0][0].loc[len(self.groups[0][0])-1]["lat"],4)) + "\tLong: "+str(round(self.groups[0][0].loc[len(self.groups[0][0])-1]["lon"],4))
         self.endPt1.config(text="End Point 1: " + self.endPoint1)
         
         self.numOfRides1.config(text="Number of Rides: "+str(len(self.groups[0])))
         
         if (len(self.groups) > 1):
-            self.startPoint2 = "lat: "+str(self.groups[1][0].loc[0]['lat']) + "\tLong: "+str(self.groups[1][0].loc[0]['lon'])
+            self.startPoint2 = "Lat: "+str(round(self.groups[1][0].loc[0]['lat'], 4)) + "\tLong: "+str(round(self.groups[1][0].loc[0]['lon'],4))
             self.startPt2.config(text="Start Point 2: " + self.startPoint2)
             
-            self.endPoint2 = "lat: "+str(self.groups[1][0].loc[len(self.groups[1][0])-1]["lat"]) + "\tLong: "+str(self.groups[1][0].loc[len(self.groups[1][0])-1]["lon"])
+            self.endPoint2 = "Lat: "+str(round(self.groups[1][0].loc[len(self.groups[1][0])-1]["lat"],4)) + "\tLong: "+str(round(self.groups[1][0].loc[len(self.groups[1][0])-1]["lon"],4))
             self.endPt2.config(text="End Point 2: " + self.endPoint2)
             
             self.numOfRides2.config(text="Number of Rides: "+str(len(self.groups[1])))
+        else:
+            self.startPt2.config(text="N/A")
+            self.endPt2.config(text="N/A")
+            self.numOfRides2.config(text="N/A")
                                     
         if (len(self.groups) > 2 ):
-            self.startPoint3 = "lat: "+str(self.groups[2][0].loc[0]['lat']) + "\tLong: "+str(self.groups[2][0].loc[0]['lon'])
+            self.startPoint3 = "Lat: "+str(round(self.groups[2][0].loc[0]['lat'],4)) + "\tLong: "+str(round(self.groups[2][0].loc[0]['lon'],4))
             self.startPt3.config(text="Start Point 3: " + self.startPoint3)
             
-            self.endPoint3 = "lat: "+str(self.groups[2][0].loc[len(self.groups[2][0])-1]["lat"]) + "\tLong: "+str(self.groups[2][0].loc[len(self.groups[2][0])-1]["lon"])
+            self.endPoint3 = "Lat: "+str(round(self.groups[2][0].loc[len(self.groups[2][0])-1]["lat"],4)) + "\tLong: "+str(round(self.groups[2][0].loc[len(self.groups[2][0])-1]["lon"],4))
             self.endPt3.config(text="End Point 3: " + self.endPoint3)
             
             self.numOfRides3.config(text="Number of Rides: "+str(len(self.groups[2])))
+        else:
+            self.startPt3.config(text="N/A")
+            self.endPt3.config(text="N/A")
+            self.numOfRides3.config(text="N/A")
                                     
         if (len(self.groups) > 3 ):
-            self.startPoint4 = "lat: "+str(self.groups[3][0].loc[0]['lat']) + "\tLong: "+str(self.groups[3][0].loc[0]['lon'])
+            self.startPoint4 = "Lat: "+str(round(self.groups[3][0].loc[0]['lat'],4)) + "\tLong: "+str(round(self.groups[3][0].loc[0]['lon'],4))
             self.startPt4.config(text="Start Point 4: " + self.startPoint4)
             
-            self.endPoint4 = "lat: "+str(self.groups[3][0].loc[len(self.groups[3][0])-1]["lat"]) + "\tLong: "+str(self.groups[3][0].loc[len(self.groups[3][0])-1]["lon"])
+            self.endPoint4 = "Lat: "+str(round(self.groups[3][0].loc[len(self.groups[3][0])-1]["lat"],4)) + "\tLong: "+str(round(self.groups[3][0].loc[len(self.groups[3][0])-1]["lon"],4))
             self.endPt4.config(text="End Point 4: " + self.endPoint4)
             
             self.numOfRides4.config(text="Number of Rides: "+str(len(self.groups[3])))
+        else:
+            self.startPt4.config(text="N/A")
+            self.endPt4.config(text="N/A")
+            self.numOfRides4.config(text="N/A")
 
         messagebox.showinfo("Status","Processed")
                                 
@@ -240,7 +303,7 @@ class Application(Tk):
 
 
     def resolve_third_point(self):
-        messagebox.showinfo("Status","Processing")
+        messagebox.showinfo("Status","Start Processing?")
         for group in self.groups[int(self.groupNumber.get())-1]:
             if (self.point(group, float(self.long.get()), float(self.lat.get()))):
                 ridedate = group.loc[0]["time"].date()
@@ -433,5 +496,5 @@ class Application(Tk):
 
 # Create and run the application
 app = Application()
-app.title("Statistics For the File")
+app.title("GPS-Route Analyser")
 app.mainloop()
