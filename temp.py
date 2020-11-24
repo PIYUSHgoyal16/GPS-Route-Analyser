@@ -147,10 +147,10 @@ class Application(Tk):
         self.file_label.pack(fill=BOTH)
 
         #Creating the browse button for choosing the text file in the GUI
-        self.browse1 = tkinter.Button(f11,text = "Choose Directory for Rider1",command = self.set_dir_location)
+        self.browse1 = tkinter.Button(f11,text = "Choose Directory for Rider1",command = self.load_rider1)
         self.browse1.pack(fill=BOTH)
         
-        self.browse2 = tkinter.Button(f11,text = "Choose Directory for Rider2",command = self.rider2)
+        self.browse2 = tkinter.Button(f11,text = "Choose Directory for Rider2",command = self.load_rider2)
         self.browse2.pack(fill=BOTH)
 
         self.status = Label(f12, text="STATUS: RUNNING")
@@ -346,7 +346,15 @@ class Application(Tk):
 
 
     # Defining the function that sets the main text file location
-    def rider2(self):
+    def load_rider2(self):
+        '''
+        Utility function for selecting directory containing rider two's gpx files  
+
+        Returns
+        -------
+        None.
+
+        '''
         global my_notebook
         self.dir_location2 = filedialog.askdirectory()
         self.file_label.config(text = "File: " + self.dir_location2)
@@ -373,7 +381,15 @@ class Application(Tk):
 
 
     # Defining the function that sets the main text file location
-    def set_dir_location(self):
+    def load_rider1(self):
+        '''
+        Utility function for selecting directory containing rider one's gpx files  
+
+        Returns
+        -------
+        None.
+
+        '''
         self.dir_location = filedialog.askdirectory()
         self.file_label.config(text = "File: " + self.dir_location)
         self.status.config(text="STATUS: PROCESSING")
@@ -398,7 +414,16 @@ class Application(Tk):
 
 
     #Creating function to display the distance vs date graph
-    def distVsDate(self):            
+    def distVsDate(self):     
+        '''
+
+        Utility function to display plot for distance vs date
+        
+        Returns
+        -------
+        None.
+        
+        '''        
         for widget in self.fm.winfo_children():
             widget.destroy()
 
@@ -419,6 +444,15 @@ class Application(Tk):
 
     #Creating function to display the speed vs date graph
     def allspeedVsdate(self):
+        '''
+
+        Utility function to display plot for speed vs date
+        
+        Returns
+        -------
+        None.
+        
+        '''        
         for widget in self.fm.winfo_children():
             widget.destroy()
 
@@ -439,6 +473,15 @@ class Application(Tk):
 
     #Creating function to display the plot for speed vs date graph
     def speedVsDate(self):
+        '''
+
+        Utility function to display plot for speed vs date
+        
+        Returns
+        -------
+        None.
+        
+        '''        
         dates = []
         speed = []
 
@@ -455,6 +498,15 @@ class Application(Tk):
 
     #Creating function to display the time vs date graph
     def timeVsDate(self):
+        '''
+
+        Utility function to display plot for time vs date
+        
+        Returns
+        -------
+        None.
+        
+        '''        
         dates = []
         durations = []
 
@@ -471,6 +523,15 @@ class Application(Tk):
 
     #Creating function to display the elecation vs date graph
     def elevationVsdate(self):
+        '''
+
+        Utility function to display plot for elevation vs date
+        
+        Returns
+        -------
+        None.
+        
+        '''        
         dates = []
         durations = []
 
@@ -531,6 +592,19 @@ class Application(Tk):
 
     #Takes file as input and returns the file data as a dataframe
     def gpx_dataframe(self, file):
+        '''
+
+        Parameters
+        ----------
+        file : gpx file
+            Input gpx file
+
+        Returns
+        -------
+        df : Pandas dataframe 
+            Dataframe for corresponding ride
+            
+        '''
         gpx_file = open(file, 'r')
         gpx = gpxpy.parse(gpx_file)
         df = pd.DataFrame(columns=['lat', 'lon', 'ele', 'time'])
@@ -542,6 +616,25 @@ class Application(Tk):
     
     #Creating a function to find out the distance between two locations
     def dis_points(self, lat1, lon1, lat2, lon2):
+        '''
+
+        Parameters
+        ----------
+        lat1 : Float 
+            latitude of first location
+        lon1 : Float 
+            longitude of first location
+        lat2 : Float 
+            latitude of second location
+        lon2 : Float 
+            longitude of second location
+
+        Returns
+        -------
+        distance : Integer 
+            distance between the two locations(in km)
+
+        '''
         R = 6373.0
         lat1 = math.radians(lat1)
         lon1 = math.radians(lon1)
