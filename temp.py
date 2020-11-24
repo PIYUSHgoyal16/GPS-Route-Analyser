@@ -88,7 +88,24 @@ class Application(Tk):
         self.startPoint4=""
         self.endPoint4=""
         self.rides4=""
-
+        
+        
+        #Label Variables for group number
+        self.startlat=""
+        self.startlon=""
+        self.endlat=""
+        self.endlon=""
+        self.midlat=""
+        self.midlon=""
+        
+        #Entry Variables for group number
+        self.startlat_entry=""
+        self.startlon_entry=""
+        self.endlat_entry=""
+        self.endlon_entry=""
+        self.midlat_entry=""
+        self.midlon_entry=""
+        
         self.groups = {}
 
         #Threshold to compare 2 points
@@ -207,30 +224,56 @@ class Application(Tk):
         self.third.config(font=("Helvetica", 18))
         self.third.pack()
         
-        f31=Frame(f,height=20,width=50, relief=RAISED, borderwidth=2)
-        f31.pack(fill='x')
-        f32=Frame(f,height=20,width=50, relief=RAISED, borderwidth=2)
-        f32.pack(fill='x')
-        f33=Frame(f,height=20,width=50, relief=RAISED, borderwidth=2)
-        f33.pack(fill='x')
-
-        #Creating the label and entry box for the group number
-        self.gno = Label(f31, text="Enter Group No: " + self.endPoint4)
-        self.gno.pack(padx=5, pady=5, side=LEFT)
-        self.group_no = Entry(f31, textvariable=self.groupNumber)
-        self.group_no.pack(fill=X, expand=True)
-
-        #Creating the label and entry box for the latitude
-        self.enterlat = Label(f32, text="Enter Latitude:   " + self.endPoint4)
-        self.enterlat.pack(padx=5, pady=5, side=LEFT)
-        self.latitude = Entry(f32, textvariable=self.lat)
-        self.latitude.pack(fill=X, expand=True)
         
-        #Creating the label and entry box for the longitude
-        self.enterlong = Label(f33, text="Enter Longitude: " + self.endPoint4)
-        self.enterlong.pack(padx=5, pady=5, side=LEFT)
-        self.longitude = Entry(f33, textvariable=self.long)
-        self.longitude.pack(fill=X, expand=True)
+        #Frame for taking input of group points
+        f41=Frame(f,height=20,width=50, relief=RAISED, borderwidth=2)
+        f41.pack(fill='x')
+        f42=Frame(f,height=20,width=50, relief=RAISED, borderwidth=2)
+        f42.pack(fill='x')
+        f43=Frame(f,height=20,width=50, relief=RAISED, borderwidth=2)
+        f43.pack(fill='x')
+        
+        f44=Frame(f,height=20,width=50, relief=RAISED, borderwidth=2)
+        f44.pack(fill='x')
+        f45=Frame(f,height=20,width=50, relief=RAISED, borderwidth=2)
+        f45.pack(fill='x')
+        f46=Frame(f,height=20,width=50, relief=RAISED, borderwidth=2)
+        f46.pack(fill='x')
+        
+        #Inputing the group points
+        self.startlat = Label(f41, text="Enter Group Starting point latitude " )
+        self.startlat.pack(padx=5, pady=5, side=LEFT)
+        self.startlat_entry = Entry(f41)
+        self.startlat_entry.pack(fill=X, expand=True)
+        
+        self.startlon = Label(f42, text="Enter Group Starting point longitude " )
+        self.startlon.pack(padx=5, pady=5, side=LEFT)
+        self.startlon_entry = Entry(f42)
+        self.startlon_entry.pack(fill=X, expand=True)
+        
+        self.endlat = Label(f43, text="Enter Group Ending point latitude " )
+        self.endlat.pack(padx=5, pady=5, side=LEFT)
+        self.endlat_entry = Entry(f43)
+        self.endlat_entry.pack(fill=X, expand=True)
+        
+        self.endlon = Label(f44, text="Enter Group Ending point longitude " )
+        self.endlon.pack(padx=5, pady=5, side=LEFT)
+        self.endlon_entry = Entry(f44)
+        self.endlon_entry.pack(fill=X, expand=True)
+        
+        self.midlat = Label(f45, text="Enter Group Mid point latitude " )
+        self.midlat.pack(padx=5, pady=5, side=LEFT)
+        self.midlat_entry = Entry(f45)
+        self.midlat_entry.pack(fill=X, expand=True)
+        
+        self.midlon = Label(f46, text="Enter Group mid point longitude " )
+        self.midlon.pack(padx=5, pady=5, side=LEFT)
+        self.midlon_entry = Entry(f46)
+        self.midlon_entry.pack(fill=X, expand=True)
+        
+ 
+        
+      
 
         #Creating the submit button
         self.resolvethird = tkinter.Button(f,text = "Submit",command = self.resolve_third_point)
@@ -248,7 +291,7 @@ class Application(Tk):
         self.stats.pack()
         self.SvsD = tkinter.Button(f7,text = "Speed Vs Date",command = self.speedVsDate)
         self.SvsD.pack()
-        self.TvsD = tkinter.Button(f7,text = "Time Vs Date",command = self.timeVsDate)
+        self.TvsD = tkinter.Button(f7,text = "Time Vs Date",command = self.timeVsDate) 
         self.TvsD.pack()
         self.EvsD = tkinter.Button(f7,text = "Elevation-Speed Vs Date",command = self.elevationVsdate)
         self.EvsD.pack()
