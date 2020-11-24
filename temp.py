@@ -652,6 +652,21 @@ class Application(Tk):
 
     #Function returns true if 2 dataframes have same starting and ending point
     def compare(self, df1, df2):
+        '''
+
+        Parameters
+        ----------
+        df1 :  Pandas dataframe 
+            Dataframe corresponding to first ride
+        df2 :  Pandas dataframe 
+            Dataframe corresponding to second ride
+
+        Returns
+        -------
+        bool: True/False
+            True if same starting and ending point else false
+
+        '''
         start1_lat = df1.loc[0]["lat"]
         start1_long = df1.loc[0]["lon"]
         start2_lat = df2.loc[0]["lat"]
@@ -668,6 +683,25 @@ class Application(Tk):
 
     #Function to put routes with same satarting and ending point in one group
     def group(self, path_to_dir):
+        '''
+
+        Parameters
+        ----------
+        path_to_dir : string  
+            path to a directory containing gpx files
+
+        Returns
+        -------
+        dist : List
+            Distance for each ride
+        dates : List
+            dates for each ride
+        times : List
+            Time taken for each ride
+        i : Integer
+            Number of rides
+
+        '''
         print(path_to_dir)
         dist = []
         times = []
@@ -689,6 +723,19 @@ class Application(Tk):
 
     #Function to calculate total time of ride
     def time(self, df):
+        '''
+
+        Parameters
+        ----------
+        df : Pandas dataframe 
+            Dataframe for corresponding ride
+
+        Returns
+        -------
+        timediff : Integer 
+            route travelling time in hours 
+
+        '''
         time_start = df.loc[0]["time"]
         time_end = df.loc[len(df)-1]["time"]
         timediff = time_end - time_start
@@ -698,6 +745,19 @@ class Application(Tk):
 
     #Function to calculate total time of ride
     def upward_time(self, df):
+        '''
+        
+        Parameters
+        ----------
+        df : Pandas dataframe 
+            Dataframe for corresponding ride
+
+        Returns
+        -------
+        timediff : Integer 
+            upward/elevation travelling time in hours  
+
+        '''
         timediff = 0
         for i in range(len(df)-1):
             ele1 = df.loc[i]["ele"]
@@ -738,6 +798,19 @@ class Application(Tk):
 
     #Function to calculate distance travelled in a ride
     def upward_route_len(self, df):
+        '''
+
+        Parameters
+        ----------
+        df : Pandas dataframe
+            Dataframe for corresponding ride
+
+        Returns
+        -------
+        distance : Integer
+                upward route length of gpx file ride (in km)  
+
+        '''
         distance = 0
         for i in range(len(df)-1):
             ele1 = df.loc[i]["ele"]
@@ -753,6 +826,23 @@ class Application(Tk):
 
     #Function to check if given latitude and longitude are part of a dataframe
     def point(self, df, long, lat):
+        '''
+
+        Parameters
+        ----------
+        df : Pandas dataframe
+            Dataframe for corresponding ride
+        long : Float 
+            longitude
+        lat : Float 
+            latitude
+
+        Returns
+        -------
+        bool : True or false
+            Return true if given latitude and longitude are part of a dataframe else false
+
+        '''
         for i in range(len(df)):
             print(self.dis_points(df.loc[i]["lat"],df.loc[i]["lon"],lat,long))
             if(self.dis_points(df.loc[i]["lat"],df.loc[i]["lon"],lat,long)<=self.threshold):
@@ -760,6 +850,17 @@ class Application(Tk):
         return False
         
     def eleTime(self, groups):
+        '''
+        
+        Parameters
+        ----------
+        groups : 
+
+        Returns
+        -------
+        None.
+
+        '''
         for i in range(len(groups)):
             plt.figure()
             plt.title("Time taken on different days for longitude: ",groups[i][0].loc[0]["lon"],"and latitude: ",groups[i][0].loc[0]["lat"])
@@ -773,9 +874,36 @@ class Application(Tk):
                 plt.ylabel("Time")
         
     def highest_ele(self, df):
+        '''
+        
+        Parameters
+        ----------
+        df : Pandas Dataframe
+            Dataframe for corresponding ride
+
+        Returns
+        -------
+        Highest elevation : Integer
+                        Returns highest elevation
+
+        '''
         return max(df["ele"])
 
     def lowest_ele(self, df):
+        '''
+        
+        Parameters
+        ----------
+        df : Pandas dataframe
+             Dataframe for corresponding ride
+
+        Returns
+        -------
+        
+        Lowest elevation : Integer
+                        Returns lowest elevation
+
+        '''
         return min(df["ele"])
     
     def averageSpeed(self):
