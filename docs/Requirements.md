@@ -4,7 +4,7 @@
 1. [Introduction](#intro)
     1. [Need and Purpose](#need)  
     2. [Intended Audience](#audience)
-    3. [Referances](#referances)
+    3. [References](#references)
 
 <br>
 
@@ -43,7 +43,7 @@ This document describes the details of the requirements this tool is expected to
     This document is intended for software developers and designers. Dr. Padmanabhan Rajan, the client, and professor under whose guidance this project is implemented may also read the document.
     
 
-3. <h3 id="referances"> Referances </h3>
+3. <h3 id="references"> References </h3>
     [1] <a href="https://kivy.org/doc/stable/">Kivy Official Documentation</a>
     <br>
     [2] <a href="https://en.wikipedia.org/wiki/Strava">Strava Wikipedia</a>
