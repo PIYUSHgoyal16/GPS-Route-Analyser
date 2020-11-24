@@ -379,7 +379,6 @@ class Application(Tk):
         self.status.config(text="STATUS: PROCESSING")
         self.status.config(foreground="blue")
         messagebox.showinfo("Status","Start Processing?")
-        self.fill_info()
         
         self.distancesR1, self.datesR1, self.timesR1, self.numR1 = self.group(self.dir_location)
 
@@ -397,19 +396,6 @@ class Application(Tk):
         self.status.config(foreground="green")
         messagebox.showinfo("Status","Processed")
 
-
-    def fill_info(self):
-        for file in os.listdir(self.dir_location):
-            path = (str(self.dir_location+"/"+file))
-            df = self.gpx_dataframe(path)
-
-            ridedate = df.loc[0]["time"].date()
-            self.alldates.append(ridedate)
-            self.alldistances[ridedate] = self.route_len(df)
-            self.alldurations[ridedate] = self.time(df)
-            self.allupwardDurations[ridedate] = self.upward_time(df)
-        
-        self.alldates.sort()
 
     #Creating function to display the distance vs date graph
     def distVsDate(self):            
