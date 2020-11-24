@@ -18,7 +18,35 @@ import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
-
+# map functionality
+import gpxpy
+import mplleaflet
+import matplotlib.pyplot as plt
+import subprocess
+def plot_map(file):
+    gpx = gpxpy.parse(open(file))
+    track = gpx.tracks[0]
+    segment = track.segments[0]
+    fig, ax = plt.subplots()
+    data = []
+    for point_idx, point in enumerate(segment.points):
+        data.append([point.longitude, point.latitude,
+                     point.elevation, point.time, segment.get_speed(point_idx)])
+        
+    from pandas import DataFrame
+    
+    columns = ['Longitude', 'Latitude', 'Altitude', 'Time', 'Speed']
+    df = DataFrame(data, columns=columns)
+    df.head()
+    
+    
+    df = df.dropna()
+    ax.plot(df['Longitude'], df['Latitude'],color='darkorange', linewidth=5, alpha=0.5)
+    mplleaflet.save_html(fig,fileobj="test.html")
+    opener="xdg-open"
+    subprocess.call([opener, "test.html"])
+    
+plot_map("./Morning_Ride.gpx")
         
 # Creating the class of the application
 class Application(Tk):
