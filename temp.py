@@ -107,6 +107,14 @@ class Application(Tk):
         self.avgt1=""
         self.avgt2=""
         
+        #Created the variables for group number
+        self.startLat=""
+        self.startLon=""
+        self.endLat=""
+        self.endLon=""
+        self.midLat=""
+        self.midLon=""
+        
         #Label Variables for group number
         self.startlat=""
         self.startlon=""
@@ -239,32 +247,32 @@ class Application(Tk):
         #Inputing the group points
         self.startlat = Label(f41, text="Enter Group Starting point latitude " )
         self.startlat.pack(padx=5, pady=5, side=LEFT)
-        self.startlat_entry = Entry(f41 , width=75)
+        self.startlat_entry = Entry(f41 , width=55)
         self.startlat_entry.pack(side=RIGHT)
         
         self.startlon = Label(f42, text="Enter Group Starting point longitude " )
         self.startlon.pack(padx=5, pady=5, side=LEFT)
-        self.startlon_entry = Entry(f42 , width=75)
+        self.startlon_entry = Entry(f42 , width=55)
         self.startlon_entry.pack(side=RIGHT)
         
         self.endlat = Label(f43, text="Enter Group Ending point latitude " )
         self.endlat.pack(padx=5, pady=5, side=LEFT)
-        self.endlat_entry = Entry(f43 , width=75)
+        self.endlat_entry = Entry(f43 , width=55)
         self.endlat_entry.pack(side=RIGHT)
         
         self.endlon = Label(f44, text="Enter Group Ending point longitude " )
         self.endlon.pack(padx=5, pady=5, side=LEFT)
-        self.endlon_entry = Entry(f44 , width=75)
+        self.endlon_entry = Entry(f44 , width=55)
         self.endlon_entry.pack(side=RIGHT)
         
         self.midlat = Label(f45, text="Enter Group Mid point latitude " )
         self.midlat.pack(padx=5, pady=5, side=LEFT)
-        self.midlat_entry = Entry(f45 , width=75)
+        self.midlat_entry = Entry(f45 , width=55)
         self.midlat_entry.pack(side=RIGHT)
         
         self.midlon = Label(f46, text="Enter Group mid point longitude " )
         self.midlon.pack(padx=5, pady=5, side=LEFT)
-        self.midlon_entry = Entry(f46 , width=75)
+        self.midlon_entry = Entry(f46 , width=55)
         self.midlon_entry.pack(side=RIGHT)
       
     
@@ -576,6 +584,14 @@ class Application(Tk):
 
 
     def resolve_third_point(self):
+        
+        self.startLat=self.startlat_entry.get()
+        self.startLon=self.startlon_entry.get()
+        self.midLat=self.midlat_entry.get()
+        self.midLon=self.midlon_entry.get()
+        self.endLat=self.endlat_entry.get()
+        self.endLon=self.endlon_entry.get()
+
         self.status.config(text="STATUS: PROCESSING")
         self.status.config(foreground="blue")
         messagebox.showinfo("Status","Start Processing?")
