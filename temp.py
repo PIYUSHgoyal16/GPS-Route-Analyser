@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Nov 22 18:45:19 2020
-
-@author: Akshit Kumar
-"""
-#NavigationToolbar2TkAgg
 import tkinter
 from tkinter import *
 from tkinter import Tk
@@ -56,6 +49,18 @@ class Application(Tk):
         self.geometry('750x2520')
         self.grid()
 
+        self.distancesR1 = []
+        self.datesR1 = []
+        self.timesR1 = []
+        self.numR1 = 0
+        self.speedR1 = []
+
+        self.distancesR2 = []
+        self.datesR2 = []
+        self.timesR2 = []
+        self.numR2 = 0
+        self.speedR2 = []
+
         self.dates = []
         self.durations = {}
         self.upwardDurations = {}
@@ -70,6 +75,7 @@ class Application(Tk):
         self.long=StringVar(self)
 
         self.dir_location=""
+        self.dir_location2=""
         self.dist=""
         self.avgtime=""
         self.avgspeed=""
@@ -153,11 +159,11 @@ class Application(Tk):
         self.group1 = Label(f3, text="Rider 1")
         self.group1.config(font=("Helvetica", 18))
         self.group1.pack()
-        self.startPt1 = Label(f3, text="Start Point 1: " + self.startPoint1)
-        self.startPt1.pack()
-        self.endPt1 = Label(f3, text="End Point 1: " + self.endPoint1)
-        self.endPt1.pack()
-        self.numOfRides1 = Label(f3, text="Start Point 1: " + self.rides1)
+        self.dist1 = Label(f3, text="Distance: " + self.startPoint1)
+        self.dist1.pack()
+        self.avgs1 = Label(f3, text="Average Speed: " + self.endPoint1)
+        self.avgs1.pack()
+        self.numOfRides1 = Label(f3, text="Number of Rides: " + self.rides1)
         self.numOfRides1.pack()
         
         self.f22=Frame(f21,height=20,width=500, relief=RAISED, padx=15, pady=10, borderwidth=2)
@@ -168,44 +174,13 @@ class Application(Tk):
         self.group2 = Label(f4, text="Rider 2")
         self.group2.config(font=("Helvetica", 18))
         self.group2.pack()
-        self.startPt2 = Label(f4, text="Start Point 2: " + self.startPoint2)
-        self.startPt2.pack()
-        self.endPt2 = Label(f4, text="End Point 2: " + self.endPoint2)
-        self.endPt2.pack()
-        self.numOfRides2 = Label(f4, text="Start Point 2: " + self.rides2)
+        self.dist2 = Label(f4, text="Distance: " + self.startPoint2)
+        self.dist2.pack()
+        self.avgs2 = Label(f4, text="Average Speed: " + self.endPoint2)
+        self.avgs2.pack()
+        self.numOfRides2 = Label(f4, text="Number of Rides: " + self.rides2)
         self.numOfRides2.pack()
         
-        """
-        f5=Frame(self.f22,height=20,width=500, relief=RAISED, padx=15, pady=10, borderwidth=2)
-        f5.pack(fill='x',padx=5, pady=10, side=LEFT)
-        self.group3 = Label(f5, text="Group 3")
-        self.group3.config(font=("Helvetica", 18))
-        self.group3.pack()
-        self.startPt3 = Label(f5, text="Start Point 3: " + self.startPoint3)
-        self.startPt3.pack()
-        self.endPt3 = Label(f5, text="End Point 3: " + self.endPoint3)
-        self.endPt3.pack()
-        self.numOfRides3 = Label(f5, text="Start Point 3: " + self.rides3)
-        self.numOfRides3.pack()
-        
-
-        f6=Frame(self.f22,height=20,width=500, relief=RAISED, padx=15, pady=10, borderwidth=2)
-        f6.pack(fill='x',padx=5, pady=10, side=RIGHT)
-        self.group4 = Label(f6, text="Group 4")
-        self.group4.config(font=("Helvetica", 18))
-        self.group4.pack()
-        self.startPt4 = Label(f6, text="Start Point 4: " + self.startPoint4)
-        self.startPt4.pack()
-        self.endPt4 = Label(f6, text="End Point 4: " + self.endPoint4)
-        self.endPt4.pack()
-        self.numOfRides4 = Label(f6, text="Start Point 4: " + self.rides4)
-        self.numOfRides4.pack()
-        
-        
-        self.genstat = Label(f21, text="General Stat")
-        self.genstat.config(font=("Helvetica", 18))
-        self.genstat.pack()
-        """
         
         self.DistvsDate = tkinter.Button(self.f22,text = "Distance Vs Date",command = self.distVsDate)
         self.DistvsDate.pack()
@@ -312,23 +287,25 @@ class Application(Tk):
 
     # Defining the function that sets the main text file location
     def rider2(self):
-        self.dir_location = filedialog.askdirectory()
-        self.file_label.config(text = "File: " + self.dir_location)
+        self.dir_location2 = filedialog.askdirectory()
+        self.file_label.config(text = "File: " + self.dir_location2)
         self.status.config(text="STATUS: PROCESSING")
         self.status.config(foreground="blue")
         messagebox.showinfo("Status","Start Processing?")
         self.fill_info()
-        self.groups = self.group(self.dir_location)
+
+        self.distancesR2, self.datesR2, self.timesR2, self.numR2 = self.group(self.dir_location2)
+
+        self.speedR2 = []
+        for i in range(len(self.distancesR2)):
+            self.speedR2.append( self.distancesR2[i] / self.timesR2[i] )
+
+        self.dist2.config(text="Distance: " + str(round(np.sum(self.distancesR2),2)) + " km")
         
-        self.startPoint2 = "Lat: "+str(round(self.groups[0][0].loc[0]['lat'], 4)) + "\tLong: "+str(round(self.groups[0][0].loc[0]['lon'], 4))
-        self.startPt2.config(text="Start Point 1: " + self.startPoint1)
+        self.avgs2.config(text="Average Speed: " + str(round(np.sum(self.speedR2),2)) + " km/hour")
         
-        self.endPoint2 = "Lat: "+str(round(self.groups[0][0].loc[len(self.groups[0][0])-1]["lat"],4)) + "\tLong: "+str(round(self.groups[0][0].loc[len(self.groups[0][0])-1]["lon"],4))
-        self.endPt2.config(text="End Point 1: " + self.endPoint1)
-        
-        self.numOfRides2.config(text="Number of Rides: "+str(len(self.groups[0])))
-        
-        
+        self.numOfRides2.config(text="Number of Rides: "+str(self.numR2))
+
         self.status.config(text="STATUS: PROCESSED")
         self.status.config(foreground="green")
         messagebox.showinfo("Status","Processed")
@@ -341,55 +318,19 @@ class Application(Tk):
         self.status.config(foreground="blue")
         messagebox.showinfo("Status","Start Processing?")
         self.fill_info()
-        self.groups = self.group(self.dir_location)
         
-        self.startPoint1 = "Lat: "+str(round(self.groups[0][0].loc[0]['lat'], 4)) + "\tLong: "+str(round(self.groups[0][0].loc[0]['lon'], 4))
-        self.startPt1.config(text="Start Point 1: " + self.startPoint1)
-        
-        self.endPoint1 = "Lat: "+str(round(self.groups[0][0].loc[len(self.groups[0][0])-1]["lat"],4)) + "\tLong: "+str(round(self.groups[0][0].loc[len(self.groups[0][0])-1]["lon"],4))
-        self.endPt1.config(text="End Point 1: " + self.endPoint1)
-        
-        self.numOfRides1.config(text="Number of Rides: "+str(len(self.groups[0])))
-        
-        if (len(self.groups) > 1):
-            self.startPoint2 = "Lat: "+str(round(self.groups[1][0].loc[0]['lat'], 4)) + "\tLong: "+str(round(self.groups[1][0].loc[0]['lon'],4))
-            self.startPt2.config(text="Start Point 2: " + self.startPoint2)
-            
-            self.endPoint2 = "Lat: "+str(round(self.groups[1][0].loc[len(self.groups[1][0])-1]["lat"],4)) + "\tLong: "+str(round(self.groups[1][0].loc[len(self.groups[1][0])-1]["lon"],4))
-            self.endPt2.config(text="End Point 2: " + self.endPoint2)
-            
-            self.numOfRides2.config(text="Number of Rides: "+str(len(self.groups[1])))
-        else:
-            self.startPt2.config(text="N/A")
-            self.endPt2.config(text="N/A")
-            self.numOfRides2.config(text="N/A")
-                                    
-        if (len(self.groups) > 2 ):
-            self.startPoint3 = "Lat: "+str(round(self.groups[2][0].loc[0]['lat'],4)) + "\tLong: "+str(round(self.groups[2][0].loc[0]['lon'],4))
-            self.startPt3.config(text="Start Point 3: " + self.startPoint3)
-            
-            self.endPoint3 = "Lat: "+str(round(self.groups[2][0].loc[len(self.groups[2][0])-1]["lat"],4)) + "\tLong: "+str(round(self.groups[2][0].loc[len(self.groups[2][0])-1]["lon"],4))
-            self.endPt3.config(text="End Point 3: " + self.endPoint3)
-            
-            self.numOfRides3.config(text="Number of Rides: "+str(len(self.groups[2])))
-        else:
-            self.startPt3.config(text="N/A")
-            self.endPt3.config(text="N/A")
-            self.numOfRides3.config(text="N/A")
-                                    
-        if (len(self.groups) > 3 ):
-            self.startPoint4 = "Lat: "+str(round(self.groups[3][0].loc[0]['lat'],4)) + "\tLong: "+str(round(self.groups[3][0].loc[0]['lon'],4))
-            self.startPt4.config(text="Start Point 4: " + self.startPoint4)
-            
-            self.endPoint4 = "Lat: "+str(round(self.groups[3][0].loc[len(self.groups[3][0])-1]["lat"],4)) + "\tLong: "+str(round(self.groups[3][0].loc[len(self.groups[3][0])-1]["lon"],4))
-            self.endPt4.config(text="End Point 4: " + self.endPoint4)
-            
-            self.numOfRides4.config(text="Number of Rides: "+str(len(self.groups[3])))
-        else:
-            self.startPt4.config(text="N/A")
-            self.endPt4.config(text="N/A")
-            self.numOfRides4.config(text="N/A")
+        self.distancesR1, self.datesR1, self.timesR1, self.numR1 = self.group(self.dir_location)
 
+        self.speedR1 = []
+        for i in range(len(self.distancesR1)):
+            self.speedR1.append( self.distancesR1[i] / self.timesR1[i] )
+
+        self.dist1.config(text="Distance: " + str(round(np.sum(self.distancesR1),2)) + " km")
+        
+        self.avgs1.config(text="Average Speed: " + str(round(np.sum(self.speedR1),2)) + " km/hour")
+        
+        self.numOfRides1.config(text="Number of Rides: "+str(self.numR1))
+        
         self.status.config(text="STATUS: PROCESSED")
         self.status.config(foreground="green")
         messagebox.showinfo("Status","Processed")
@@ -409,37 +350,41 @@ class Application(Tk):
         self.alldates.sort()
 
     #Creating function to display the distance vs date graph
-    def distVsDate(self):
-        dates = []
-        distances = []
-
-        for i in self.alldates:
-            dates.append(i.strftime("%m/%d/%Y"))
-            distances.append(self.alldistances[i])
-            
+    def distVsDate(self):            
         for widget in self.fm.winfo_children():
             widget.destroy()
-        f=Figure(figsize = (8,3) , dpi=100)
+
+        f=Figure(figsize = (8,4) , dpi=100)
         a=f.add_subplot(111)
-        a.plot(dates , distances)
+        a.bar(self.datesR1 , self.distancesR1, width=0.8, label="Rider 1")
+        
+        a.bar(self.datesR2 , self.distancesR2, label="Rider 2")
+
+        a.set_title("Distances Vs Dates")
+        a.set_xlabel("Dates (in MM/DD/YYYY)")
+        a.set_ylabel("Distances (in km)")
+        a.legend()
+
         canvas=FigureCanvasTkAgg(f , self.fm)
         canvas.draw()
         canvas.get_tk_widget().pack(side=tkinter.TOP , fill=tkinter.BOTH , expand=True)
 
     #Creating function to display the speed vs date graph
     def allspeedVsdate(self):
-        dates = []
-        speed = []
-
-        for i in self.alldates:
-            dates.append(i.strftime("%m/%d/%Y"))
-            speed.append((self.alldistances[i]*60)/self.alldurations[i])
-
         for widget in self.fm.winfo_children():
             widget.destroy()
-        f=Figure(figsize = (8,3) , dpi=100)
+
+        f=Figure(figsize = (8,4) , dpi=100)
         a=f.add_subplot(111)
-        a.plot(dates , speed)
+        a.bar(self.datesR1 , self.speedR1, width=0.8, label="Rider 1")
+        
+        a.bar(self.datesR2 , self.speedR2, label="Rider 2")
+
+        a.set_title("Speed Vs Dates")
+        a.set_xlabel("Dates (in MM/DD/YYYY)")
+        a.set_ylabel("Speed (in km/hour)")
+        a.legend()
+
         canvas=FigureCanvasTkAgg(f , self.fm)
         canvas.draw()
         canvas.get_tk_widget().pack(side=tkinter.TOP , fill=tkinter.BOTH , expand=True)
@@ -582,25 +527,24 @@ class Application(Tk):
 
     #Function to put routes with same satarting and ending point in one group
     def group(self, path_to_dir):
-        group = {}
+        print(path_to_dir)
+        dist = []
+        times = []
+        dates = []
         i = 0
+
         for file in os.listdir(path_to_dir):
             path = (str(path_to_dir+"/"+file))
             print(path)
             df = self.gpx_dataframe(path)
+            
+            dates.append(df.loc[0]["time"].date().strftime("%m/%d/%Y"))
+            dist.append(self.route_len(df))
+            times.append(self.time(df))
 
-            flag = True
-            keys = group.keys()
-            for j in (keys):
-                if(self.compare(group[j][0],df)):
-                    group[j].append(df)
-                    flag = False
-                    break
-            if(flag==True):
-                g = [df]
-                group[i] = g   
-                i = i+1    
-        return group
+            i += 1
+
+        return dist, dates, times, i
 
     #Function to calculate total time of ride
     def time(self, df):
@@ -608,6 +552,7 @@ class Application(Tk):
         time_end = df.loc[len(df)-1]["time"]
         timediff = time_end - time_start
         timediff = timediff.value * pow(10,-9)
+        timediff /= 3600
         return timediff
 
     #Function to calculate total time of ride
@@ -625,27 +570,31 @@ class Application(Tk):
 
     #Function to calculate distance travelled in a ride
     def route_len(self, df):
+        """
+        
+        Parameters
+        ----------
+        df : Dataframe
+            Dataframe for corresponding ride
+
+        Returns
+        -------
+        distance : Integer
+            route length of gpx file ride (in km)
+
+        """
         distance = 0
-        for i in range(len(df)-1):
-            long1 = df.loc[i]["lon"] 
-            long2 = df.loc[i+1]["lon"] 
-            lat1 = df.loc[i]["lat"] 
-            lat2 = df.loc[i+1]["lat"] 
-            R = 6373.0
-            lat1 = math.radians(lat1)
-            lon1 = math.radians(long1)
-            lat2 = math.radians(lat2)
-            lon2 = math.radians(long2)
-
-            dlon = lon2 - lon1
-            dlat = lat2 - lat1
-
-            a = math.sin(dlat / 2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2)**2
-            c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-            d = R * c
-
-            distance = distance + d
+        i = 0
+        
+        while (i + 64 < len(df)):
+            long1 = df.iloc[i]["lon"] 
+            long2 = df.iloc[i+64]["lon"] 
+            lat1 = df.iloc[i]["lat"] 
+            lat2 = df.iloc[i+64]["lat"]         
             
+            distance += self.dis_points(lat1, long1, lat2, long2)
+            i += 64
+        
         return distance
 
     #Function to calculate distance travelled in a ride
