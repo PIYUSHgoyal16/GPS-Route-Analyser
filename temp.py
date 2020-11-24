@@ -341,7 +341,6 @@ class Application(Tk):
         self.status.config(text="STATUS: PROCESSING")
         self.status.config(foreground="blue")
         messagebox.showinfo("Status","Start Processing?")
-        self.fill_info()
 
         self.distancesR2, self.datesR2, self.timesR2, self.numR2 = self.group(self.dir_location2)
 
