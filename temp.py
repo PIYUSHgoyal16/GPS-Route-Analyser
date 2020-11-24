@@ -445,6 +445,30 @@ class Application(Tk):
         canvas=FigureCanvasTkAgg(f , self.fm)
         canvas.draw()
         canvas.get_tk_widget().pack(side=tkinter.TOP , fill=tkinter.BOTH , expand=True)
+        
+    def in_group(start_lat, start_lon, end_lat, end_lon, mid_lat, mid_lon, df):
+    n = len(df)
+    s = 0
+    e = 0
+    m = 0
+    start_ind = 0
+    end_ind = 0
+    for i in range(n):
+        if(self.in_viscinity(start_lat,start_lon,df.iloc[i]["lat"], df.iloc[i]["lon"])):
+            s = 1
+            start_ind = i
+        if(self.in_viscinity(end_lat,end_lon,df.iloc[i]["lat"], df.iloc[i]["lon"])):
+            e = 1
+            end_ind = i
+        if(self.in_viscinity(mid_lat,mid_lon,df.iloc[i]["lat"], df.iloc[i]["lon"])):
+            m = 1
+    
+    if(s==1 and e==1 and m==1 and start_ind<end_ind):
+        return start_ind, end_ind
+    
+    else:
+        return -1, -1
+
 
     #Creating function to display the speed vs date graph
     def allspeedVsdate(self):
