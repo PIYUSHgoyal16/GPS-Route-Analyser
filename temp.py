@@ -94,7 +94,10 @@ class Application(Tk):
         self.startPoint4=""
         self.endPoint4=""
         self.rides4=""
-        
+        self.avgs1=""
+        self.avgs2=""
+        self.avgt1=""
+        self.avgt2=""
         
         #Label Variables for group number
         self.startlat=""
@@ -116,11 +119,21 @@ class Application(Tk):
 
         #Threshold to compare 2 points
         self.threshold = 1
+        
+        #Creating tabs for our GUI
+        my_notebook=ttk.Notebook(self)
+        my_notebook.pack()
+        my_frame1=tkinter.Frame(my_notebook , width=700 , height=2400)
+        my_frame2=tkinter.Frame(my_notebook , width=700 , height=2400)
+        my_frame1.pack(fill="both" , expand=1)
+        my_frame2.pack(fill="both" , expand=1)
+        my_notebook.add(my_frame1, text="Tab1")
+        my_notebook.add(my_frame2, text="Tab2")
 
         #Creating a frame for choose a directory in GUI
         
         
-        f1=Frame(self,height=20,width=50, relief=RAISED, padx=15, pady=10, borderwidth=2)
+        f1=Frame(my_frame1,height=20,width=50, relief=RAISED, padx=15, pady=10, borderwidth=2)
         f1.pack(fill='x')
 
         f12=Frame(f1,height=20)
@@ -146,7 +159,7 @@ class Application(Tk):
         self.status.pack(side=RIGHT)
         
         
-        f21=Frame(self,height=20,width=50, relief=RAISED, padx=15, pady=10, borderwidth=2)
+        f21=Frame(my_frame1,height=20,width=50, relief=RAISED, padx=15, pady=10, borderwidth=2)
         f21.pack(fill='x')
         
         
@@ -188,10 +201,10 @@ class Application(Tk):
         self.SpeedVsDate.pack()
         
         
-        self.fm = tkinter.Frame(self, width=800, height=320, padx=10 , pady=15 , bg="white")
+        self.fm = tkinter.Frame(my_frame1, width=800, height=320, padx=10 , pady=15 , bg="white")
         self.fm.pack(side=tkinter.TOP, expand=tkinter.NO, fill=tkinter.NONE)
 
-        f=tkinter.Frame(self,height=20,width=50, relief=RAISED, padx=15, pady=10, borderwidth=2)
+        f=tkinter.Frame(my_frame1,height=20,width=50, relief=RAISED, padx=15, pady=10, borderwidth=2)
         f.pack(fill='x')        
 
         #Creating the Label for the third point
@@ -254,39 +267,87 @@ class Application(Tk):
         self.resolvethird = tkinter.Button(f,text = "Submit",command = self.resolve_third_point)
         self.resolvethird.pack()
 
-        f8=Frame(self,height=20,width=50, relief=RAISED, padx=15, pady=10, borderwidth=2)
+        f8=Frame(my_frame2,height=20,width=50, relief=RAISED, padx=15, pady=10, borderwidth=2)
         f8.pack(fill='x')
 
         f7=Frame(f8,height=20,width=50, relief=RAISED, padx=15, pady=10, borderwidth=2)
         f7.pack(fill='x')
         
         #Displaying the final output
-        self.stats = Label(f7, text="Group " + self.groupNumber.get() + " Stats")
+        self.stats = Label(f7, text="Route " + self.groupNumber.get() + " Stats")
         self.stats.config(font=("Helvetica", 18))
         self.stats.pack()
+        """
         self.SvsD = tkinter.Button(f7,text = "Speed Vs Date",command = self.speedVsDate)
         self.SvsD.pack()
         self.TvsD = tkinter.Button(f7,text = "Time Vs Date",command = self.timeVsDate) 
         self.TvsD.pack()
         self.EvsD = tkinter.Button(f7,text = "Elevation-Speed Vs Date",command = self.elevationVsdate)
         self.EvsD.pack()
+        """
         
         self.routeLength = Label(f7, text="\nRoute Length: " + str(self.dist))
         self.routeLength.pack()
         self.eleRouteLength = Label(f7, text="Elevated Route Length: " + str(self.eleLen))
         self.eleRouteLength.pack()
-        self.Speed = Label(f7, text="Average Speed: " + str(self.avgspeed))
-        self.Speed.pack()
-        self.Time = Label(f7, text="Average Time: " + str(self.avgtime))
-        self.Time.pack()
+        #self.Speed = Label(f7, text="Average Speed: " + str(self.avgspeed))
+        #self.Speed.pack()
+        #self.Time = Label(f7, text="Average Time: " + str(self.avgtime))
+        #self.Time.pack()
         self.Highest = Label(f7, text="Highest Elevation Point: " + str(self.highEle))
         self.Highest.pack()
         self.Lowest = Label(f7, text="Lowest Elevation Point: " + str(self.lowEle))
         self.Lowest.pack()
+        
+        #f29=Frame(my_frame2,height=20,width=50, relief=RAISED, padx=15, pady=10, borderwidth=2)
+        #f29.pack(fill='x')
+        
+        
+    
+        f2a=tkinter.Frame(my_frame2,height=20,width=500, relief=RAISED, padx=15, pady=10, borderwidth=2)
+        f2a.pack(fill='x')
+
+        #Creating tiles so as to show the groupings of GPX files(Similar to RecyclerView in android)
+        f3a=Frame(f2a,height=20,width=50, relief=RAISED, padx=15, pady=10, borderwidth=2)
+        f3a.pack(padx=5, pady=10, side=LEFT)
+        self.group1a = Label(f3a, text="Rider 1")
+        self.group1a.config(font=("Helvetica", 18))
+        self.group1a.pack()
+        self.avgSpeed1 = Label(f3a, text="Average Speed: " + str(self.avgs1))
+        self.avgSpeed1.pack()
+        self.avgsTime1 = Label(f3a, text="Average Time: " + str(self.avgt1))
+        self.avgsTime1.pack()
+        
+        f4a=Frame(f2a,height=20,width=50, relief=RAISED, padx=15, pady=10, borderwidth=2)
+        f4a.pack(fill='x',padx=5, pady=10, side=RIGHT)
+        self.group2a = Label(f4a, text="Rider 2")
+        self.group2a.config(font=("Helvetica", 18))
+        self.group2a.pack()
+        self.avgSpeed1 = Label(f4a, text="Average Speed: " + str(self.avgs2))
+        self.avgSpeed1.pack()
+        self.avgsTime1 = Label(f4a, text="Average Time: " + str(self.avgt2))
+        self.avgsTime1.pack()
+        
+        self.f44=Frame(my_frame2,height=20,width=500, relief=RAISED, padx=15, pady=10, borderwidth=2)
+        self.f44.pack(fill='x')
+        
+        self.averageSpeed = tkinter.Button(self.f44,text = "Speed vs Date",command = self.averageSpeed)
+        self.averageSpeed.pack()
+        self.averageTime = tkinter.Button(self.f44,text = "Time vs Date",command = self.averageTime)
+        self.averageTime.pack()
+        self.elevationspeed = tkinter.Button(self.f44,text = "Elevation vs Date",command = self.averageTime)
+        self.elevationspeed.pack()
+        
+        
+        self.fn = tkinter.Frame(my_frame2, width=800, height=300, padx=10 , pady=15 , bg="white")
+        self.fn.pack(side=tkinter.TOP, expand=tkinter.NO, fill=tkinter.NONE)
+        
+        
 
 
     # Defining the function that sets the main text file location
     def rider2(self):
+        global my_notebook
         self.dir_location2 = filedialog.askdirectory()
         self.file_label.config(text = "File: " + self.dir_location2)
         self.status.config(text="STATUS: PROCESSING")
@@ -309,6 +370,7 @@ class Application(Tk):
         self.status.config(text="STATUS: PROCESSED")
         self.status.config(foreground="green")
         messagebox.showinfo("Status","Processed")
+
 
     # Defining the function that sets the main text file location
     def set_dir_location(self):
@@ -576,12 +638,10 @@ class Application(Tk):
         ----------
         df : Dataframe
             Dataframe for corresponding ride
-
         Returns
         -------
         distance : Integer
             route length of gpx file ride (in km)
-
         """
         distance = 0
         i = 0
@@ -638,6 +698,26 @@ class Application(Tk):
 
     def lowest_ele(self, df):
         return min(df["ele"])
+    
+    def averageSpeed(self):
+        for widget in self.fn.winfo_children():
+            widget.destroy()
+        f=Figure(figsize = (8,3) , dpi=100)
+        a=f.add_subplot(111)
+        a.plot([1,2,3,4,5,6,7,8] , [8,6,3,2,1,4,7,5])
+        canvas=FigureCanvasTkAgg(f , self.fn)
+        canvas.draw()
+        canvas.get_tk_widget().pack(side=tkinter.TOP , fill=tkinter.BOTH , expand=True)
+        
+    def averageTime(self):
+        for widget in self.fn.winfo_children():
+            widget.destroy()
+        f=Figure(figsize = (8,3) , dpi=100)
+        a=f.add_subplot(111)
+        a.plot([1,2,3,4,5,6,7,8] , [1,5,8,7,4,2,3,6])
+        canvas=FigureCanvasTkAgg(f , self.fn)
+        canvas.draw()
+        canvas.get_tk_widget().pack(side=tkinter.TOP , fill=tkinter.BOTH , expand=True)
 
 # Create and run the application
 app = Application()
