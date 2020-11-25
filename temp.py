@@ -453,8 +453,13 @@ class Application(Tk):
         canvas=FigureCanvasTkAgg(f , self.fm)
         canvas.draw()
         canvas.get_tk_widget().pack(side=tkinter.TOP , fill=tkinter.BOTH , expand=True)
-        
-    def in_group(start_lat, start_lon, end_lat, end_lon, mid_lat, mid_lon, df):
+    
+    def in_viscinity(self, lat1, lon1, lat2, lon2):
+        if(abs(lat1 - lat2) + abs(lon1 - lon2) < 0.0001):
+            return 1
+        return 0
+
+    def in_group(self, start_lat, start_lon, end_lat, end_lon, mid_lat, mid_lon, df):
         n = len(df)
         s = 0
         e = 0
@@ -472,7 +477,7 @@ class Application(Tk):
                 m = 1
         
         if(s==1 and e==1 and m==1 and start_ind<end_ind):
-            return start_ind, end_ind
+            return df.iloc[start_ind, end_ind+1]
         
         else:
             return -1, -1
