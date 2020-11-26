@@ -1,0 +1,18 @@
+## Installation Guidelines
+
+
+1. **Install python3**
+    
+        apt-get install python3
+
+2. **Install Requirements**
+        
+        pip3 install -r requirement.txt
+
+3. **Install tkinter**
+
+    If you are using a MaC OS or Windows, you can skip this step as tkinter is pre-installed along with python. Linux Users may follow the [Installation Guidelines](https://altanalyze.readthedocs.io/en/latest/StandAloneDependencies/#:~:text=Install%20Tkinter%3A%20apt%2Dget%20install,apt%2Dget%20install%20python%2Dmatplotlib).
+
+4. **Run Tool** 
+        
+        python3 app.py
