@@ -50,6 +50,13 @@ class Application(Tk):
 
         self.map_df = pd.DataFrame()
 
+        self.routeDatesR1 = []
+        self.routeSpeedR1 = []
+        self.routeTimeR1 = []
+        self.routeDatesR2 = []
+        self.routeSpeedR2 = []
+        self.routeTimeR2 = []
+
         self.dates = []
         self.durations = {}
         self.upwardDurations = {}
@@ -83,10 +90,10 @@ class Application(Tk):
         self.startPoint4=""
         self.endPoint4=""
         self.rides4=""
-        self.avgs1=""
-        self.avgs2=""
-        self.avgt1=""
-        self.avgt2=""
+        self.avgspeed1=""
+        self.avgspeed2=""
+        self.avgtime1=""
+        self.avgtime2=""
         
         #Created the variables for group number
         self.startLat=""
@@ -305,9 +312,9 @@ class Application(Tk):
         self.group1a = Label(f3a, text="Rider 1")
         self.group1a.config(font=("Helvetica", 18))
         self.group1a.pack()
-        self.avgSpeed1 = Label(f3a, text="Average Speed: " + str(self.avgs1))
+        self.avgSpeed1 = Label(f3a, text="Average Speed: " + str(self.avgspeed1))
         self.avgSpeed1.pack()
-        self.avgsTime1 = Label(f3a, text="Average Time: " + str(self.avgt1))
+        self.avgsTime1 = Label(f3a, text="Average Time: " + str(self.avgtime1))
         self.avgsTime1.pack()
         
         f4a=Frame(f2a,height=20,width=50, relief=RAISED, padx=15, pady=10, borderwidth=2)
@@ -315,17 +322,17 @@ class Application(Tk):
         self.group2a = Label(f4a, text="Rider 2")
         self.group2a.config(font=("Helvetica", 18))
         self.group2a.pack()
-        self.avgSpeed1 = Label(f4a, text="Average Speed: " + str(self.avgs2))
-        self.avgSpeed1.pack()
-        self.avgsTime1 = Label(f4a, text="Average Time: " + str(self.avgt2))
-        self.avgsTime1.pack()
+        self.avgSpeed2 = Label(f4a, text="Average Speed: " + str(self.avgspeed2))
+        self.avgSpeed2.pack()
+        self.avgsTime2 = Label(f4a, text="Average Time: " + str(self.avgtime2))
+        self.avgsTime2.pack()
         
         self.f44=Frame(my_frame2,height=20,width=500, relief=RAISED, padx=15, pady=10, borderwidth=2)
         self.f44.pack(fill='x')
         
-        self.averageSpeed = tkinter.Button(self.f44,text = "Speed vs Date",command = self.averageSpeed)
+        self.averageSpeed = tkinter.Button(self.f44,text = "Speed vs Date",command = self.routeAverageSpeed)
         self.averageSpeed.pack()
-        self.averageTime = tkinter.Button(self.f44,text = "Time vs Date",command = self.averageTime)
+        self.averageTime = tkinter.Button(self.f44,text = "Time vs Date",command = self.routeAverageTime)
         self.averageTime.pack()
         """
         self.elevationspeed = tkinter.Button(self.f44,text = "Elevation vs Date",command = self.averageTime)
@@ -420,7 +427,7 @@ class Application(Tk):
         for widget in self.fm.winfo_children():
             widget.destroy()
 
-        f=Figure(figsize = (8,4) , dpi=100)
+        f=Figure(figsize = (8,3) , dpi=100)
         a=f.add_subplot(111)
         a.bar(self.datesR1 , self.distancesR1, width=0.8, label="Rider 1")
         
@@ -438,6 +445,10 @@ class Application(Tk):
     
 
     def in_viscinity(self, lat1, lon1, lat2, lon2):
+        lat1 = round(lat1, 3)
+        lon1 = round(lon1, 3)
+        lat2 = round(lat2, 3)
+        lon2 = round(lon2, 3)
         if((lat1 == lat2) and (lon1 == lon2)):
             return 1
         return 0
@@ -450,14 +461,14 @@ class Application(Tk):
         start_ind = 0
         end_ind = 0
         for i in range(n):
-            if(self.in_viscinity(start_lat,start_lon,df.iloc[i]["lat"], df.iloc[i]["lon"])):
+            if(s==0 and self.in_viscinity(start_lat,start_lon,df.iloc[i]["lat"], df.iloc[i]["lon"])):
                 s = 1
                 start_ind = i
-            if(self.in_viscinity(end_lat,end_lon,df.iloc[i]["lat"], df.iloc[i]["lon"])):
+            if(s!=0 and m==0 and self.in_viscinity(mid_lat,mid_lon,df.iloc[i]["lat"], df.iloc[i]["lon"])):
+                m = 1
+            if(s!=0 and e==0 and m!=0 and self.in_viscinity(end_lat,end_lon,df.iloc[i]["lat"], df.iloc[i]["lon"])):
                 e = 1
                 end_ind = i
-            if(self.in_viscinity(mid_lat,mid_lon,df.iloc[i]["lat"], df.iloc[i]["lon"])):
-                m = 1
         
         if(s==1 and e==1 and m==1 and start_ind<end_ind):
             return df.iloc[start_ind: end_ind+1]
@@ -480,7 +491,7 @@ class Application(Tk):
         for widget in self.fm.winfo_children():
             widget.destroy()
 
-        f=Figure(figsize = (8,4) , dpi=100)
+        f=Figure(figsize = (8,3) , dpi=100)
         a=f.add_subplot(111)
         a.bar(self.datesR1 , self.speedR1, width=0.8, label="Rider 1")
         
@@ -611,43 +622,53 @@ class Application(Tk):
         
      
         if (len(self.rider1) != 0):
-
+            length = self.route_len(self.rider1[0])
             self.set_route_stats(self.rider1[0])
             self.map_df = self.rider1[0]
             flag = False
 
-            times = []
-            dates = []
-            distances = []
-            """
+            self.routeDatesR1 = []
+            self.routeTimeR1 = []
+            self.routeSpeedR1 = []
+
             for df in self.rider1:
-                times.append(self.time(df))
-                distances.append(self.route_len(df))
-                dates.append(df.loc[0]["time"].date().strftime("%m/%d/%Y"))
+                time_df = self.time(df)
+                self.routeTimeR1.append(time_df)
+                self.routeSpeedR1.append(length/time_df)
+                self.routeDatesR1.append(df.loc[0]["time"].date().strftime("%m/%d/%Y"))
 
             ''' Average Time'''
-            self.avgtime = np.sum(times)/len(times)
-            self.Time.config(text="Average Time: " + str(round(self.avgtime/3600,3)) + " hours")
+            self.avgtime1 = np.sum(self.routeTimeR1)/len(self.routeTimeR1)
+            self.avgsTime1.config(text="Average Time: " + str(round(self.avgtime1,3)) + " hours")
             
             ''' Average Speed'''
-            self.avgspeed = (self.dist) / self.avgtime
-            self.Speed.config(text="Average Speed: " + str(round(self.avgspeed,3)) + " km/hour")
-            """
-        
+            self.avgspeed1 = (length) / self.avgtime1
+            self.avgSpeed1.config(text="Average Speed: " + str(round(self.avgspeed1,3)) + " km/hour")
+            
 
         if (len(self.rider2) != 0):
+            length = self.route_len(self.rider2[0])
             if (flag):
                 self.set_route_stats(self.rider2[0])
                 self.map_df = self.rider2[0]
-            """
+            
+            self.routeDatesR2 = []
+            self.routeTimeR2 = []
+            self.routeSpeedR2 = []
+
+            for df in self.rider2:
+                time_df = self.time(df)
+                self.routeTimeR2.append(time_df)
+                self.routeSpeedR2.append(length / time_df)
+                self.routeDatesR2.append(df.loc[0]["time"].date().strftime("%m/%d/%Y"))
+
             ''' Average Time'''
-            self.avgtime = np.sum(times)/len(times)
-            self.Time.config(text="Average Time: " + str(round(self.avgtime/3600,3)) + " hours")
+            self.avgtime2 = np.sum(self.routeTimeR2)/len(self.routeTimeR2)
+            self.avgsTime2.config(text="Average Time: " + str(round(self.avgtime2,3)) + " hours")
             
             ''' Average Speed'''
-            self.avgspeed = (self.dist) / self.avgtime
-            self.Speed.config(text="Average Speed: " + str(round(self.avgspeed,3)) + " km/hour")
-            """
+            self.avgspeed2 = (length) / self.avgtime2
+            self.avgSpeed2.config(text="Average Speed: " + str(round(self.avgspeed2,3)) + " km/hour")
 
         self.status.config(text="STATUS: PROCESSED")
         self.status.config(foreground="green")
@@ -680,7 +701,9 @@ class Application(Tk):
         ax.plot(df['lon'], df['lat'],color='darkorange', linewidth=5, alpha=0.5)
         mplleaflet.save_html(fig,fileobj="map.html")
         opener="xdg-open"
-        subprocess.call([opener, "map.html"])
+        x = os.fork()
+        if (x==0):
+            subprocess.call([opener, "map.html"])
 
     #Takes file as input and returns the file data as a dataframe
     def gpx_dataframe(self, file):
@@ -1003,25 +1026,46 @@ class Application(Tk):
         '''
         return min(df["ele"])
     
-    def averageSpeed(self):
+    def routeAverageSpeed(self):
         for widget in self.fn.winfo_children():
             widget.destroy()
-        f=Figure(figsize = (8,3) , dpi=100)
+
+        f=Figure(figsize = (8,4) , dpi=100)
         a=f.add_subplot(111)
-        a.plot([1,2,3,4,5,6,7,8] , [8,6,3,2,1,4,7,5])
+        a.bar(self.routeDatesR1 , self.routeSpeedR1, width=0.8, label="Rider 1")
+        
+        a.bar(self.routeDatesR2 , self.routeSpeedR2, label="Rider 2")
+
+        a.set_title("Speed Vs Dates")
+        a.set_xlabel("Dates (in MM/DD/YYYY)")
+        a.set_ylabel("Speed (in km/hour)")
+        plt.xticks(rotation=60)
+        a.legend()
+
         canvas=FigureCanvasTkAgg(f , self.fn)
         canvas.draw()
         canvas.get_tk_widget().pack(side=tkinter.TOP , fill=tkinter.BOTH , expand=True)
         
-    def averageTime(self):
+    def routeAverageTime(self):
         for widget in self.fn.winfo_children():
             widget.destroy()
-        f=Figure(figsize = (8,3) , dpi=100)
+
+        f=Figure(figsize = (8,4) , dpi=100)
         a=f.add_subplot(111)
-        a.plot([1,2,3,4,5,6,7,8] , [1,5,8,7,4,2,3,6])
+        a.bar(self.routeDatesR1 , self.routeTimeR1, width=0.8, label="Rider 1")
+        
+        a.bar(self.routeDatesR2 , self.routeTimeR2, label="Rider 2")
+
+        a.set_title("Speed Vs Dates")
+        a.set_xlabel("Dates (in MM/DD/YYYY)")
+        a.set_ylabel("Time (in hour)")
+        plt.xticks(rotation=60)
+        a.legend()
+
         canvas=FigureCanvasTkAgg(f , self.fn)
         canvas.draw()
         canvas.get_tk_widget().pack(side=tkinter.TOP , fill=tkinter.BOTH , expand=True)
+
 
 # Create and run the application
 app = Application()
