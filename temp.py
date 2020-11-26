@@ -69,6 +69,9 @@ class Application(Tk):
         self.numR2 = 0
         self.speedR2 = []
 
+        self.rider1 = []
+        self.rider2 = []
+
         self.dates = []
         self.durations = {}
         self.upwardDurations = {}
@@ -457,7 +460,7 @@ class Application(Tk):
         canvas.get_tk_widget().pack(side=tkinter.TOP , fill=tkinter.BOTH , expand=True)
     
     def in_viscinity(self, lat1, lon1, lat2, lon2):
-        if(abs(lat1 - lat2) + abs(lon1 - lon2) < 0.0001):
+        if((lat1 == lat2) and (lon1 == lon2)):
             return 1
         return 0
 
@@ -479,7 +482,7 @@ class Application(Tk):
                 m = 1
         
         if(s==1 and e==1 and m==1 and start_ind<end_ind):
-            return df.iloc[start_ind, end_ind+1]
+            return df.iloc[start_ind: end_ind+1]
         
         else:
             return -1
@@ -593,56 +596,101 @@ class Application(Tk):
 
     def resolve_third_point(self):
         
-        self.startLat=self.startlat_entry.get()
-        self.startLon=self.startlon_entry.get()
-        self.midLat=self.midlat_entry.get()
-        self.midLon=self.midlon_entry.get()
-        self.endLat=self.endlat_entry.get()
-        self.endLon=self.endlon_entry.get()
+        self.startLat = float(self.startlat_entry.get())
+        self.startLon = float(self.startlon_entry.get())
+        self.midLat = float(self.midlat_entry.get())
+        self.midLon = float(self.midlon_entry.get())
+        self.endLat = float(self.endlat_entry.get())
+        self.endLon = float(self.endlon_entry.get())
 
         self.status.config(text="STATUS: PROCESSING")
         self.status.config(foreground="blue")
         messagebox.showinfo("Status","Start Processing?")
-        """"
-        for group in self.groups[int(self.groupNumber.get())-1]:
-            if (self.point(group, float(self.long.get()), float(self.lat.get()))):
-                ridedate = group.loc[0]["time"].date()
-                self.dates.append(ridedate)
-                dur = self.time(group) / 60
-                self.durations[ridedate] = dur
-                upward_dur = self.upward_time(group) / 60
-                self.upwardDurations[ridedate] = upward_dur
-        """
+
+        self.rider1 = []
+        self.rider2 = []
+        flag = True
+
+        for file in os.listdir(self.dir_location):
+            path = (str(self.dir_location+"/"+file))
+            print(path)
+            df = self.gpx_dataframe(path)
+            df = self.in_group(self.startLat, self.startLon, self.endLat, self.endLon, self.midLat, self.midLon, df)
+            
+            if (type(df) != type(0)):
+                df.reset_index(drop=True, inplace=True)
+                self.rider1.append(df)
                 
-        self.dates.sort()
+        for file in os.listdir(self.dir_location2):
+            path = (str(self.dir_location2+"/"+file))
+            print(path)
+            df = self.gpx_dataframe(path)
+            df = self.in_group(self.startLat, self.startLon, self.endLat, self.endLon, self.midLat, self.midLon, df)
+            
+            if (type(df) != type(0)):
+                df.reset_index(drop=True, inplace=True)
+                self.rider2.append(df)
+        
+     
+        if (len(self.rider1) != 0):
 
-        ''' Route Length'''
-        self.dist = self.route_len(self.groups[int(self.groupNumber.get())-1][0])
-        self.routeLength.config(text="\nRoute Length: " + str(round(self.dist,3)) + " km")
-        
-        ''' Average Time'''
-        self.avgtime = self.time(self.groups[int(self.groupNumber.get())-1][0])
-        self.Time.config(text="Average Time: " + str(round(self.avgtime/3600,3)) + " hours")
-        
-        ''' Average Speed'''
-        self.avgspeed = (self.dist*3600) / self.avgtime
-        self.Speed.config(text="Average Speed: " + str(round(self.avgspeed,3)) + " km/hour")
-        
-        ''' Maximum Elevation'''
-        self.highEle = self.highest_ele(self.groups[int(self.groupNumber.get())-1][0])
-        self.Highest.config(text="Maximum Elevation: " + str(self.highEle))
+            self.set_route_stats(self.rider1[0])
+            flag = False
 
-        ''' Minimum Elevation'''
-        self.lowEle = self.lowest_ele(self.groups[int(self.groupNumber.get())-1][0])
-        self.Lowest.config(text="Minimum Elevation: " + str(self.lowEle))
+            times = []
+            dates = []
+            distances = []
+            """
+            for df in self.rider1:
+                times.append(self.time(df))
+                distances.append(self.route_len(df))
+                dates.append(df.loc[0]["time"].date().strftime("%m/%d/%Y"))
+
+            ''' Average Time'''
+            self.avgtime = np.sum(times)/len(times)
+            self.Time.config(text="Average Time: " + str(round(self.avgtime/3600,3)) + " hours")
+            
+            ''' Average Speed'''
+            self.avgspeed = (self.dist) / self.avgtime
+            self.Speed.config(text="Average Speed: " + str(round(self.avgspeed,3)) + " km/hour")
+            """
         
-        ''' Upward Elevated Path'''
-        self.eleLen = self.upward_route_len(self.groups[int(self.groupNumber.get())-1][0])
-        self.eleRouteLength.config(text="Elevated Path: " + str(round(self.eleLen,3)) + " km")
+
+        if (len(self.rider2) != 0):
+            if (flag):
+                self.set_route_stats(self.rider1[0])
+            """
+            ''' Average Time'''
+            self.avgtime = np.sum(times)/len(times)
+            self.Time.config(text="Average Time: " + str(round(self.avgtime/3600,3)) + " hours")
+            
+            ''' Average Speed'''
+            self.avgspeed = (self.dist) / self.avgtime
+            self.Speed.config(text="Average Speed: " + str(round(self.avgspeed,3)) + " km/hour")
+            """
+
         self.status.config(text="STATUS: PROCESSED")
         self.status.config(foreground="green")
-        messagebox.showinfo("Status","Processed")
+        messagebox.showinfo("Status","Processed\nSwitch to Tab 2 to see the RESULTS")
         
+
+    def set_route_stats(self, df):
+        ''' Route Length'''
+        self.dist = self.route_len(df)
+        self.routeLength.config(text="\nRoute Length: " + str(round(self.dist,3)) + " km")
+        
+        ''' Maximum Elevation'''
+        self.highEle = self.highest_ele(df)
+        self.Highest.config(text="Maximum Elevation: " + str(self.highEle) + " feet")
+
+        ''' Minimum Elevation'''
+        self.lowEle = self.lowest_ele(df)
+        self.Lowest.config(text="Minimum Elevation: " + str(self.lowEle) + " feet")
+        
+        ''' Upward Elevated Path'''
+        self.eleLen = self.upward_route_len(df)
+        self.eleRouteLength.config(text="Elevated Path: " + str(round(self.eleLen,3)) + " km")
+
 
     #Takes file as input and returns the file data as a dataframe
     def gpx_dataframe(self, file):
@@ -867,15 +915,19 @@ class Application(Tk):
 
         '''
         distance = 0
-        for i in range(len(df)-1):
+        i = 0
+        
+        while (i + 64 < len(df)):
             ele1 = df.loc[i]["ele"]
             ele2 = df.loc[i+1]["ele"]
             if (ele1 < ele2):
-                long1 = df.loc[i]["lon"] 
-                long2 = df.loc[i+1]["lon"] 
-                lat1 = df.loc[i]["lat"] 
-                lat2 = df.loc[i+1]["lat"] 
-                distance = distance + self.dis_points(lat1, long1, lat2, long2)    
+                long1 = df.iloc[i]["lon"] 
+                long2 = df.iloc[i+64]["lon"] 
+                lat1 = df.iloc[i]["lat"] 
+                lat2 = df.iloc[i+64]["lat"]         
+            
+                distance += self.dis_points(lat1, long1, lat2, long2)
+            i += 64
         return distance
 
 
