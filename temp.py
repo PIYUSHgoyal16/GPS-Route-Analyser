@@ -368,13 +368,13 @@ class Application(Tk):
         None.
 
         '''
-        global my_notebook
         self.dir_location2 = filedialog.askdirectory()
         self.file_label.config(text = "File: " + self.dir_location2)
         self.status.config(text="STATUS: PROCESSING")
         self.status.config(foreground="blue")
         messagebox.showinfo("Status","Start Processing?")
 
+        print("Choosed Directory for Rider2:\n" + self.dir_location2 + "\n")
         self.distancesR2, self.datesR2, self.timesR2, self.numR2 = self.group(self.dir_location2)
 
         self.speedR2 = []
@@ -408,6 +408,7 @@ class Application(Tk):
         self.status.config(foreground="blue")
         messagebox.showinfo("Status","Start Processing?")
         
+        print("Choosed Directory for Rider1:\n" + self.dir_location + "\n")
         self.distancesR1, self.datesR1, self.timesR1, self.numR1 = self.group(self.dir_location)
 
         self.speedR1 = []
@@ -448,6 +449,7 @@ class Application(Tk):
         a.set_title("Distances Vs Dates")
         a.set_xlabel("Dates (in MM/DD/YYYY)")
         a.set_ylabel("Distances (in km)")
+        plt.xticks(rotation=60)
         a.legend()
 
         canvas=FigureCanvasTkAgg(f , self.fm)
@@ -480,7 +482,7 @@ class Application(Tk):
             return df.iloc[start_ind, end_ind+1]
         
         else:
-            return -1, -1
+            return -1
 
 
     #Creating function to display the speed vs date graph
@@ -506,6 +508,7 @@ class Application(Tk):
         a.set_title("Speed Vs Dates")
         a.set_xlabel("Dates (in MM/DD/YYYY)")
         a.set_ylabel("Speed (in km/hour)")
+        plt.xticks(rotation=60)
         a.legend()
 
         canvas=FigureCanvasTkAgg(f , self.fm)
@@ -533,7 +536,7 @@ class Application(Tk):
         plt.bar(dates,speed,align='center')
         plt.title('Plot for Speed of Same Ride Vs Date',fontweight ="bold") 
         plt.xlabel('Date (MM/DD/YYYY)',fontsize=15)
-        plt.xticks(rotation=45)
+        plt.xticks(rotation=90)
         plt.ylabel('Speed (Km/Hour) ',fontsize=15)
         plt.show()
 
@@ -753,12 +756,12 @@ class Application(Tk):
             Number of rides
 
         '''
-        print(path_to_dir)
         dist = []
         times = []
         dates = []
         i = 0
 
+        print("Processing files:")
         for file in os.listdir(path_to_dir):
             path = (str(path_to_dir+"/"+file))
             print(path)
@@ -770,6 +773,7 @@ class Application(Tk):
 
             i += 1
 
+        print("Processing finished\n")
         return dist, dates, times, i
 
     #Function to calculate total time of ride
