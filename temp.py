@@ -23,30 +23,6 @@ import gpxpy
 import mplleaflet
 import matplotlib.pyplot as plt
 import subprocess
-def plot_map(file):
-    gpx = gpxpy.parse(open(file))
-    track = gpx.tracks[0]
-    segment = track.segments[0]
-    fig, ax = plt.subplots()
-    data = []
-    for point_idx, point in enumerate(segment.points):
-        data.append([point.longitude, point.latitude,
-                     point.elevation, point.time, segment.get_speed(point_idx)])
-        
-    from pandas import DataFrame
-    
-    columns = ['Longitude', 'Latitude', 'Altitude', 'Time', 'Speed']
-    df = DataFrame(data, columns=columns)
-    df.head()
-    
-    
-    df = df.dropna()
-    ax.plot(df['Longitude'], df['Latitude'],color='darkorange', linewidth=5, alpha=0.5)
-    mplleaflet.save_html(fig,fileobj="test.html")
-    opener="xdg-open"
-    subprocess.call([opener, "test.html"])
-    
-#plot_map("./Morning_Ride.gpx")
         
 # Creating the class of the application
 class Application(Tk):
@@ -71,6 +47,8 @@ class Application(Tk):
 
         self.rider1 = []
         self.rider2 = []
+
+        self.map_df = pd.DataFrame()
 
         self.dates = []
         self.durations = {}
@@ -306,14 +284,12 @@ class Application(Tk):
         self.routeLength.pack()
         self.eleRouteLength = Label(f7, text="Elevated Route Length: " + str(self.eleLen))
         self.eleRouteLength.pack()
-        #self.Speed = Label(f7, text="Average Speed: " + str(self.avgspeed))
-        #self.Speed.pack()
-        #self.Time = Label(f7, text="Average Time: " + str(self.avgtime))
-        #self.Time.pack()
         self.Highest = Label(f7, text="Highest Elevation Point: " + str(self.highEle))
         self.Highest.pack()
         self.Lowest = Label(f7, text="Lowest Elevation Point: " + str(self.lowEle))
         self.Lowest.pack()
+        self.map_button = tkinter.Button(f7,text = "Route Map",command = self.plot_map)
+        self.map_button.pack()
         
         #f29=Frame(my_frame2,height=20,width=50, relief=RAISED, padx=15, pady=10, borderwidth=2)
         #f29.pack(fill='x')
@@ -351,9 +327,10 @@ class Application(Tk):
         self.averageSpeed.pack()
         self.averageTime = tkinter.Button(self.f44,text = "Time vs Date",command = self.averageTime)
         self.averageTime.pack()
+        """
         self.elevationspeed = tkinter.Button(self.f44,text = "Elevation vs Date",command = self.averageTime)
         self.elevationspeed.pack()
-        
+        """
         
         self.fn = tkinter.Frame(my_frame2, width=800, height=300, padx=10 , pady=15 , bg="white")
         self.fn.pack(side=tkinter.TOP, expand=tkinter.NO, fill=tkinter.NONE)
@@ -459,6 +436,7 @@ class Application(Tk):
         canvas.draw()
         canvas.get_tk_widget().pack(side=tkinter.TOP , fill=tkinter.BOTH , expand=True)
     
+
     def in_viscinity(self, lat1, lon1, lat2, lon2):
         if((lat1 == lat2) and (lon1 == lon2)):
             return 1
@@ -635,6 +613,7 @@ class Application(Tk):
         if (len(self.rider1) != 0):
 
             self.set_route_stats(self.rider1[0])
+            self.map_df = self.rider1[0]
             flag = False
 
             times = []
@@ -658,7 +637,8 @@ class Application(Tk):
 
         if (len(self.rider2) != 0):
             if (flag):
-                self.set_route_stats(self.rider1[0])
+                self.set_route_stats(self.rider2[0])
+                self.map_df = self.rider2[0]
             """
             ''' Average Time'''
             self.avgtime = np.sum(times)/len(times)
@@ -671,7 +651,7 @@ class Application(Tk):
 
         self.status.config(text="STATUS: PROCESSED")
         self.status.config(foreground="green")
-        messagebox.showinfo("Status","Processed\nSwitch to Tab 2 to see the RESULTS")
+        messagebox.showinfo("Status","Processed\nSwitch to Tab 2 for Results")
         
 
     def set_route_stats(self, df):
@@ -691,6 +671,16 @@ class Application(Tk):
         self.eleLen = self.upward_route_len(df)
         self.eleRouteLength.config(text="Elevated Path: " + str(round(self.eleLen,3)) + " km")
 
+
+    def plot_map(self):
+        fig, ax = plt.subplots()
+        df = self.map_df
+
+        df = df.dropna()
+        ax.plot(df['lon'], df['lat'],color='darkorange', linewidth=5, alpha=0.5)
+        mplleaflet.save_html(fig,fileobj="map.html")
+        opener="xdg-open"
+        subprocess.call([opener, "map.html"])
 
     #Takes file as input and returns the file data as a dataframe
     def gpx_dataframe(self, file):
