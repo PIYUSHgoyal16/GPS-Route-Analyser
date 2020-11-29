@@ -278,14 +278,7 @@ class Application(Tk):
         self.stats = Label(f7, text="Route " + self.groupNumber.get() + " Stats")
         self.stats.config(font=("Helvetica", 18))
         self.stats.pack()
-        """
-        self.SvsD = tkinter.Button(f7,text = "Speed Vs Date",command = self.speedVsDate)
-        self.SvsD.pack()
-        self.TvsD = tkinter.Button(f7,text = "Time Vs Date",command = self.timeVsDate) 
-        self.TvsD.pack()
-        self.EvsD = tkinter.Button(f7,text = "Elevation-Speed Vs Date",command = self.elevationVsdate)
-        self.EvsD.pack()
-        """
+        
         
         self.routeLength = Label(f7, text="\nRoute Length: " + str(self.dist))
         self.routeLength.pack()
@@ -334,10 +327,7 @@ class Application(Tk):
         self.averageSpeed.pack()
         self.averageTime = tkinter.Button(self.f44,text = "Time vs Date",command = self.routeAverageTime)
         self.averageTime.pack()
-        """
-        self.elevationspeed = tkinter.Button(self.f44,text = "Elevation vs Date",command = self.averageTime)
-        self.elevationspeed.pack()
-        """
+        
         
         self.fn = tkinter.Frame(my_frame2, width=800, height=300, padx=10 , pady=15 , bg="white")
         self.fn.pack(side=tkinter.TOP, expand=tkinter.NO, fill=tkinter.NONE)
