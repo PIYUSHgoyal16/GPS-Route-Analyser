@@ -433,8 +433,27 @@ class Application(Tk):
         canvas.draw()
         canvas.get_tk_widget().pack(side=tkinter.TOP , fill=tkinter.BOTH , expand=True)
     
-
+    # Define function to check if two points have same latitude and longitude
     def in_viscinity(self, lat1, lon1, lat2, lon2):
+        '''
+
+        Parameters
+        ----------
+        lat1 : Float
+            Latitude of point one
+        lon1 : Float
+            Longitude of point one
+        lat2 : Float
+            Latitude of point two
+        lon2 : Float
+            Longitude of point two
+
+        Returns
+        -------
+        bool: 1/0
+            Returns 1 if both points have same latitude and longitude else returns 0
+
+        '''
         lat1 = round(lat1, 3)
         lon1 = round(lon1, 3)
         lat2 = round(lat2, 3)
@@ -443,7 +462,33 @@ class Application(Tk):
             return 1
         return 0
 
+    # Define function to trim a dataframe based on start, end and mid point
     def in_group(self, start_lat, start_lon, end_lat, end_lon, mid_lat, mid_lon, df):
+        '''
+
+        Parameters
+        ----------
+        start_lat : Float
+            Latitude of starting point
+        start_lon : Float
+            Longitude of starting point
+        end_lat : Float
+            Latitude of ending point
+        end_lon : Float
+            Longitude of ending point
+        mid_lat : Float
+            Latitude of middle point (third point)
+        mid_lon : Float
+            Longitude of middle point (third point)
+        df : Pandas Dataframe
+            Dataframe for corresponding rider
+
+        Returns
+        -------
+        Pandas Dataframe or Integer:
+            Returns -1 if no routes with same start, end and mid point else returns the required trimmed dataframe
+
+        '''
         n = len(df)
         s = 0
         e = 0
@@ -574,6 +619,14 @@ class Application(Tk):
 
 
     def resolve_third_point(self):
+        '''
+        Utility function which takes 3 points and computes different statistics
+
+        Returns
+        -------
+        None.
+
+        '''
         
         self.startLat = float(self.startlat_entry.get())
         self.startLon = float(self.startlon_entry.get())
@@ -664,8 +717,21 @@ class Application(Tk):
         self.status.config(foreground="green")
         messagebox.showinfo("Status","Processed\nSwitch to Tab 2 for Results")
         
-
+    # Define function that sets basic route statistics 
     def set_route_stats(self, df):
+        '''
+
+        Parameters
+        ----------
+        df : Pandas Dataframe
+            Dataframe for a corresponding ride
+
+        Returns
+        -------
+        None.
+
+        '''
+        
         ''' Route Length'''
         self.dist = self.route_len(df)
         self.routeLength.config(text="\nRoute Length: " + str(round(self.dist,3)) + " km")
@@ -682,8 +748,17 @@ class Application(Tk):
         self.eleLen = self.upward_route_len(df)
         self.eleRouteLength.config(text="Elevated Path: " + str(round(self.eleLen,3)) + " km")
 
-
+    
     def plot_map(self):
+        '''
+        
+        Utility function that plots a route on a map
+        
+        Returns
+        -------
+        None.
+
+        '''
         fig, ax = plt.subplots()
         df = self.map_df
 
@@ -786,7 +861,7 @@ class Application(Tk):
         else:
             return False
 
-    #Function to put routes with same satarting and ending point in one group
+    #Function to put routes with same starting and ending point in one group
     def group(self, path_to_dir):
         '''
 
@@ -877,7 +952,7 @@ class Application(Tk):
 
     #Function to calculate distance travelled in a ride
     def route_len(self, df):
-        """
+        '''
         
         Parameters
         ----------
@@ -887,7 +962,7 @@ class Application(Tk):
         -------
         distance : Integer
             route length of gpx file ride (in km)
-        """
+        '''
         distance = 0
         i = 0
         
@@ -1017,6 +1092,14 @@ class Application(Tk):
         return min(df["ele"])
     
     def routeAverageSpeed(self):
+        '''
+        Utility function that plots Speed vs Date on the GUI
+
+        Returns
+        -------
+        None.
+
+        '''
         for widget in self.fn.winfo_children():
             widget.destroy()
 
@@ -1037,6 +1120,14 @@ class Application(Tk):
         canvas.get_tk_widget().pack(side=tkinter.TOP , fill=tkinter.BOTH , expand=True)
         
     def routeAverageTime(self):
+        '''
+        Utility function that plots Dates vs Time between riders on the GUI
+
+        Returns
+        -------
+        None.
+
+        '''
         for widget in self.fn.winfo_children():
             widget.destroy()
 
