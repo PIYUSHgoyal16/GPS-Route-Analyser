@@ -1,5 +1,5 @@
 ## Installation Guidelines
-**Welcome to the GPS-Route-Analyser application.** This document will walk you through the application user interface, assuming you have already installed the software following the instructions as described in the Installation Guide.
+**Welcome to the GPS-Route-Analyser application.** This document will walk you through the process of installing the software.
 
 1. **Install python3**
     
