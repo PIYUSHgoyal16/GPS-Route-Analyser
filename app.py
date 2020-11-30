@@ -157,7 +157,7 @@ class Application(Tk):
         self.browse2 = tkinter.Button(f11,text = "Choose Directory for Rider2",command = self.load_rider2)
         self.browse2.pack(fill=BOTH)
 
-        self.status = Label(f12, text="STATUS: RUNNING")
+        self.status = Label(f12, text="STATUS: READY")
         self.status.config(font=("Helvatica", 16))
         self.status.config(foreground="green")
         self.status.pack(side=RIGHT)
