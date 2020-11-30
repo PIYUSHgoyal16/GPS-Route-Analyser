@@ -13,6 +13,8 @@ GPS route Analyser is a Graphical User Interface Driven Tool/Application that ca
 ## Useful links
 * [Requirements Document](https://github.com/PIYUSHgoyal16/GPS-Route-Analyser/wiki/Requirements)
 * [Design Document](https://github.com/PIYUSHgoyal16/GPS-Route-Analyser/wiki/Design)
+* [Installation Guide](https://github.com/PIYUSHgoyal16/GPS-Route-Analyser/wiki/Installation-Guide)
+* [User Manual](https://github.com/PIYUSHgoyal16/GPS-Route-Analyser/wiki/User-Manual)
 
 ## Contact for any other information details regarding project
 * b18077@students.iitmandi.ac.in
